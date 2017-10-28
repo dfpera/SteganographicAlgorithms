@@ -43,13 +43,13 @@ We plan to implement and evaluate each algorithm fully and exhaustively, in orde
 	Our findings will allow us to draw conclusions regarding the internal and external validities of the previous research in steganographic algorithms. We will also be able to compare the relative performance of each algorithm, and determine which is the most robust.
 
 ## Timeline
-| Week        | Progress |
-| ----------- | -------- |
-| 9 – Nov. 2  | Setup development environment and base code for displaying stego-images |
-| 10 – Nov. 9 | Complete implementation of one LSB algorithm |
+| Week         | Progress |
+| ------------ | -------- |
+| 9 – Nov. 2   | Setup development environment and base code for displaying stego-images |
+| 10 – Nov. 9  | Complete implementation of one LSB algorithm |
 | 11 – Nov. 16 | Complete implementation and analysis of LSB algorithm and all n-bit variations |
-| 12 – Nov. 23 Complete implementation and analysis of other algorithms |
-| 13 – Nov.30 | Complete polished application that allows the user to compare stego-images produced by different algorithms and their relative performance |
+| 12 – Nov. 23 | Complete implementation and analysis of other algorithms |
+| 13 – Nov.30  | Complete polished application that allows the user to compare stego-images produced by different algorithms and their relative performance |
 
 ## Results
 Results are derived from how each algorithm performs under a steganographic attack. To accomplish this we will use the following analysis techniques:
