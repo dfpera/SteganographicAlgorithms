@@ -17,16 +17,16 @@ Chih-Chiang Lee, and Yen-Ping Chu
 We plan to implement and evaluate each algorithm fully and exhaustively, in order to test for both internal validity (whether an algorithm performs as well as the authors claim) as well as external validity (whether we are able to replicate the study’s results). This critical approach will allow us to compare findings across studies and with our own.
 
 ## Process
-**1. Determine cover images and embedded images**
-	As with other steganography research, we will use standard 512 × 512 grayscale cover images, downloaded from http://dud.inf.tu-dresden.de/~westfeld/rsp/. The data to be embedded will be binary images, such as a logo and a fingerprint.
+1. **Determine cover images and embedded images**
+	As with other steganography research, we will use standard 512 × 512 grayscale cover images, downloaded from [BOWS2](http://dud.inf.tu-dresden.de/~westfeld/rsp/). The data to be embedded will be binary images, such as a logo and a fingerprint.
 
-**2. Implement LSB algorithm**
+2. **Implement LSB algorithm**
 	We will begin by embedding our secret data into the cover images using least significant bit (LSB) substitution, the simplest algorithm. N-bit variations will also be implemented.
 
-**3. Analyze, attack, and evaluate algorithm**
+3. **Analyze, attack, and evaluate algorithm**
 	Each variation will then be evaluated using various metrics as applicable (described later in Results). We will also investigate the detectability of each algorithm by “attacking” them with common forensics methods.
 
-**4. Implement other algorithms, and repeat step (3)**
+4. **Implement other algorithms, and repeat step (3)**
 	If time permits, we will proceed by implementing other steganography algorithms, each increasing in difficulty from the last. Our tentative list of algorithms from least to most challenging are as follows:
 	* LSB - least challenging, highest priority
 	* EMD (Exploiting Modification Direction)
@@ -39,7 +39,7 @@ We plan to implement and evaluate each algorithm fully and exhaustively, in orde
 	* DWT (Discrete Wavelet Transform)
 	* DE-DWT (DE - Discrete Wavelet Transform) - most challenging, lowest priority
 	
-**5. Compare results of each implemented algorithm**
+5. **Compare results of each implemented algorithm**
 	Our findings will allow us to draw conclusions regarding the internal and external validities of the previous research in steganographic algorithms. We will also be able to compare the relative performance of each algorithm, and determine which is the most robust.
 
 ## Timeline
@@ -47,11 +47,9 @@ We plan to implement and evaluate each algorithm fully and exhaustively, in orde
 | ----------- | -------- |
 | 9 – Nov. 2  | Setup development environment and base code for displaying stego-images |
 | 10 – Nov. 9 | Complete implementation of one LSB algorithm |
-| 11 – Nov. 16 
-(Milestone 2) | Complete implementation and analysis of LSB algorithm and all n-bit variations |
+| 11 – Nov. 16 | Complete implementation and analysis of LSB algorithm and all n-bit variations |
 | 12 – Nov. 23 Complete implementation and analysis of other algorithms |
-| 13 – Nov.30
-(Milestone 3) | Complete polished application that allows the user to compare stego-images produced by different algorithms and their relative performance |
+| 13 – Nov.30 | Complete polished application that allows the user to compare stego-images produced by different algorithms and their relative performance |
 
 ## Results
 Results are derived from how each algorithm performs under a steganographic attack. To accomplish this we will use the following analysis techniques:
