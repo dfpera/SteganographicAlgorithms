@@ -32,7 +32,6 @@ public class StegoApp extends JFrame {
         
 		new StegoApp("Steganography");
 
-        
     } // end main
 	
 	public StegoApp(String title) {
