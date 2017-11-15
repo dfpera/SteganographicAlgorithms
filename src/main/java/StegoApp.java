@@ -1,6 +1,8 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -17,27 +19,37 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 public class StegoApp extends JFrame {
 		
 	public static void main(String[] args) {
-		try {
-			LSB testingStego = new LSB(ImageIO.read(new File("assets/18.pgm")), 6, "Testing message", 250, 250);
-			testingStego.embed();
-			File outputfile = new File("image.png");
-			ImageIO.write(testingStego.getStegoImage(), "png", outputfile);
-		} catch (IOException e) {
-			System.out.println("Cannot load the image.");
-		}
         try {
             // Payload.generateQRCodeImage("This is my first QR Code", 350, 350, Payload.QR_CODE_IMAGE_PATH);
-            BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(Payload.getQRCodeImage("This is my first QR Code", 350, 350));
+        	
+        	// Create stego image
+        	LSB testingStego = new LSB(ImageIO.read(new File("assets/18.pgm")), 1, "Testing message", 250, 250);
+			testingStego.embed();
+			
+			// Save stego image
+			File stegofile = new File("OUTPUT/stego.png");
+			ImageIO.write(testingStego.getStegoImage(), "png", stegofile);
+			
+			// Save qrcode before image
+			Path path = FileSystems.getDefault().getPath("OUTPUT/qrCodeBefore.png");
+	        MatrixToImageWriter.writeToPath(testingStego.getPayload(), "PNG", path);
+			
+			// Extract QR code
+			BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(testingStego.extract());
+			
+			// Save QR code after
+			File qrfileafter = new File("OUTPUT/qrCodeAfter.png");
+			ImageIO.write(qrCode, "png", qrfileafter);
+            
+			// Decode QR code and output message
             String decodedText = Payload.decodeQRCode(qrCode);
             if(decodedText == null) {
                 System.out.println("No QR Code found in the image");
             } else {
                 System.out.println("Decoded text = " + decodedText);
             }
-        } catch (WriterException e) {
-            System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
+            System.out.println("Could not generate QR Code or load image, IOException :: " + e.getMessage());
         }
         
 		new StegoApp("Steganography");

@@ -68,8 +68,36 @@ public class LSB extends Steganography {
 	
 	@Override
 	public BitMatrix extract() {
-		// TODO Implement the extraction LSB function
-		return new BitMatrix(0); // Remove this once function is complete
+		// Track position for embedding data
+		int embedPosition = 0;
+		final int EMBED_SIZE = this.getPayloadSize();
+		
+		// Create BitMatrix for QR code
+		BitMatrix extractedData = new BitMatrix(this.getPayload().getWidth(), this.getPayload().getHeight());
+		
+		STEGO_LOOP:
+			for (int x = 0; x < this.getStegoImage().getWidth(); x++) {
+				for (int y = 0; y < this.getStegoImage().getHeight(); y++) {
+					// Get color pixel
+					int colorChannel = this.getCoverImage().getRGB(x, y) & 0xff;
+					
+					// Extract enough QR code bits before moving to next pixel
+					int embeddingBits = 0;
+					for (int i = 0; i < bitDepth; i++) {
+						
+						if (((colorChannel >>> (bitDepth-i)) & 0x01) == 1) {
+							extractedData.set(embedPosition % this.getPayload().getWidth(), embedPosition / this.getPayload().getHeight());
+						}
+								
+						// Ensure embed pointer doesn't overflow QR code
+						if (embedPosition < EMBED_SIZE-1) {
+							embedPosition++;
+						} else {
+							break STEGO_LOOP;
+						}
+					}
+				}
+			}
+		return extractedData;
 	}
-
 }
