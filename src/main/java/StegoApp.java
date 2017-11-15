@@ -1,6 +1,8 @@
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import java.awt.*;
@@ -15,6 +17,14 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 public class StegoApp extends JFrame {
 		
 	public static void main(String[] args) {
+		try {
+			LSB testingStego = new LSB(ImageIO.read(new File("assets/18.pgm")), 6, "Testing message", 250, 250);
+			testingStego.embed();
+			File outputfile = new File("image.png");
+			ImageIO.write(testingStego.getStegoImage(), "png", outputfile);
+		} catch (IOException e) {
+			System.out.println("Cannot load the image.");
+		}
         try {
             // Payload.generateQRCodeImage("This is my first QR Code", 350, 350, Payload.QR_CODE_IMAGE_PATH);
             BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(Payload.getQRCodeImage("This is my first QR Code", 350, 350));
