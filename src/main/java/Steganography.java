@@ -9,9 +9,7 @@ public abstract class Steganography {
 	private BufferedImage coverImage;
 	private BufferedImage stegoImage;
 	private BitMatrix payload;
-	private int pWidth;
-	private int pHeight;
-	private int payloadLength;
+	private int payloadSize;
 	
 	/*
 	 * Default constructor
@@ -25,10 +23,8 @@ public abstract class Steganography {
 		try {
 			this.coverImage = coverImage;
 			this.stegoImage = new BufferedImage(coverImage.getWidth(), coverImage.getHeight(), coverImage.getType());
-			this.pWidth = payloadWidth;
-			this.pHeight = payloadHeight;
-			this.payloadLength =  this.pWidth * this.pHeight;
-			this.payload = Payload.getQRCodeImage(message, pWidth, pHeight);
+			this.payload = Payload.getQRCodeImage(message, payloadWidth, payloadHeight);
+			this.payloadSize =  payloadWidth * payloadHeight;
 		} catch (WriterException e) {
             System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
         } catch (IOException e) {
@@ -40,6 +36,11 @@ public abstract class Steganography {
 	 * Override the Method embed() to implement steganographic algorithm. Then set the result to the stegoImage property which now has the secret media embedded into it.
 	 */
 	public abstract void embed();
+	
+	/*
+	 * Override the Method extract() to implement steganographic extraction algorithm. Returning the BitMatrix of the QR code.
+	 */
+	public abstract BitMatrix extract();
 	
 	/*
 	 * Set the image to be used as the cover image for steganography.
@@ -70,30 +71,12 @@ public abstract class Steganography {
 	}
 	
 	/*
-	 * Get the height of the payload binary image.
-	 * 
-	 * @return int - height of the binary image payload
-	 */
-	public int getPayloadHeight() {
-		return pHeight;
-	}
-	
-	/*
-	 * Get the width of the payload binary image.
-	 * 
-	 * @return int - width of the binary image payload
-	 */
-	public int getPayloadWidth() {
-		return pWidth;
-	}
-	
-	/*
 	 * Get the size of the payload binary image.
 	 * 
 	 * @return int - size of the binary image payload
 	 */
-	public int getPayloadLength() {
-		return payloadLength;
+	public int getPayloadSize() {
+		return payloadSize;
 	}
 	
 	/*
@@ -119,10 +102,8 @@ public abstract class Steganography {
 	 */
 	public void setPayload(String message, int payloadWidth, int payloadHeight) {
 		try {
-			this.pWidth = payloadWidth;
-			this.pHeight = payloadHeight;
-			this.payloadLength =  this.pWidth * this.pHeight;
-			this.payload = Payload.getQRCodeImage(message, pWidth, pHeight);
+			this.payloadSize =  payloadWidth * payloadHeight;
+			this.payload = Payload.getQRCodeImage(message, payloadWidth, payloadHeight);
 		} catch (WriterException e) {
             System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
         } catch (IOException e) {
