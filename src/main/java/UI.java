@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -28,9 +30,10 @@ public class UI extends JPanel implements ActionListener {
 	private int windowHeight = (int)(screenSize.height * 0.8);
 	private static UIState state;
 	
-	private JButton startButton;
-	private JTextField inputBox;
+	private JButton startButton, embedButton;
+	private JTextField textBox;
 	private JLabel inputLabel;
+	private Font title = new Font("Mononoki", Font.BOLD, 65);
 	
 	public UI(JFrame frame) {
 		super();
@@ -62,8 +65,22 @@ public class UI extends JPanel implements ActionListener {
 	} // end paint
 	
 	private void showHomeScreen(Graphics2D g2) {
-		g2.setColor(new Color(200, 200, 200));
-		g2.fillRect(0, 0, windowWidth, windowHeight);
+
+		for (int i = 0; i < windowWidth; i += 10) {
+			for (int j = 0; j < windowHeight; j += 10) {
+				if (Math.random() < 0.5) {
+					g2.setColor(new Color(220, 220, 220));
+					g2.fillRect(i, j, 10, 10);
+				}
+			}
+		}
+		GradientPaint background = new GradientPaint(0, windowHeight / 4, new Color(200, 200, 200, 0), 0, windowHeight, Color.white);
+		g2.setPaint(background);
+		g2.fillRect(0, windowHeight / 4, windowWidth, windowHeight * 3 / 4);
+		g2.setColor(new Color(22, 144, 129));
+		g2.setFont(title);
+		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);
+	        
 		startButton = createButton("Start",(int)(windowWidth * 0.75), (int)(windowHeight * 0.8),
 								   windowWidth / 6, windowHeight / 10);
 		add(startButton);
@@ -71,23 +88,26 @@ public class UI extends JPanel implements ActionListener {
 	}
 	
 	private void showMainScreen(Graphics2D g2) {
-		g2.setColor(new Color(200, 200, 200));
-		g2.fillRect(0, 0, windowWidth, windowHeight);
-		inputBox = new JTextField(20);
-		inputBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.08), windowWidth / 3, windowHeight / 15);
-		add(inputBox);
+		
+		// Issue: Can't getText() from textBox. See method call in ActionPerformed below.
+		textBox = new JTextField(10);
+		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), windowWidth / 3, windowHeight / 15);
+		add(textBox);
 		
 		inputLabel = new JLabel("Enter your secret message: ");
-		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.03), windowWidth / 3, windowHeight / 15);
+		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.05), windowWidth / 3, windowHeight / 15);
 		add(inputLabel);
 		
-		JButton embedButton = createButton("Embed as QR Code",(int)(windowWidth * 0.4), (int)(windowHeight * 0.06),
-				   windowWidth / 6, windowHeight / 10);
+		embedButton = createButton("Embed as QR Code", (int)(windowWidth * 0.4), (int)(windowHeight * 0.08),
+				   				 		   windowWidth / 6, windowHeight / 10);
 		add(embedButton);
 		embedButton.addActionListener(this);
+
+		setVisible(true);
 		
 	    remove(startButton);
 	    repaint();
+	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
 	}
 	
 	private void showStegoInfo(Graphics2D g2) {
@@ -123,13 +143,16 @@ public class UI extends JPanel implements ActionListener {
         });
   	  
   	  return button;
-  	} // end createButton
+  	} // end createButton	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == "Start") {
 			setState(UIState.MAIN);
-			//startButton.setVisible(false);
+		}			
+		if (e.getActionCommand() == "Embed as QR Code") {
+			String text = textBox.getText();
+			System.out.println(text);
 		}			
 		repaint();
 	}

@@ -16,7 +16,7 @@ public class StegoApp extends JFrame {
 		
 	public static void main(String[] args) {
         try {
-            // Payload.generateQRCodeImage("This is my first QR Code", 350, 350, Payload.QR_CODE_IMAGE_PATH);
+            // Payload.generateQRCodeImage("This is my first QR Code", 250, 250, Payload.QR_CODE_IMAGE_PATH);
             BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(Payload.getQRCodeImage("This is my first QR Code", 350, 350));
             String decodedText = Payload.decodeQRCode(qrCode);
             if(decodedText == null) {
