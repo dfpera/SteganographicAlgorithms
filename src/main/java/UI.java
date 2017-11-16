@@ -11,7 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JFrame;
@@ -27,19 +30,31 @@ public class UI extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private int windowWidth = (int)(screenSize.width * 0.8);
-	private int windowHeight = (int)(screenSize.height * 0.8);
+	private int windowHeight = (int)(screenSize.height * 0.9);
 	private static UIState state;
 	
 	private JButton startButton, embedButton;
 	private JTextField textBox;
 	private JLabel inputLabel;
-	private Font title = new Font("Mononoki", Font.BOLD, 65);
+	private Font titleFont = new Font("Mononoki", Font.BOLD, 65);
+	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
+	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
+	private Font bodyFont = new Font("Arial", Font.PLAIN, 14);
+	private boolean showQR;
+	
+	private BufferedImage qrCode;
 	
 	public UI(JFrame frame) {
 		super();
 		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		this.setLayout(null);
 		state = UIState.HOME;
+		try {
+			qrCode = ImageIO.read(new File("OUTPUT/qrCodeBefore.png")); 
+		} catch (Exception e) {
+			System.out.println("Cannot load the provided image");
+		}
+		
 	}
 
 	public void setState(UIState nextState) {
@@ -78,7 +93,7 @@ public class UI extends JPanel implements ActionListener {
 		g2.setPaint(background);
 		g2.fillRect(0, windowHeight / 4, windowWidth, windowHeight * 3 / 4);
 		g2.setColor(new Color(22, 144, 129));
-		g2.setFont(title);
+		g2.setFont(titleFont);
 		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);
 	        
 		startButton = createButton("Start",(int)(windowWidth * 0.75), (int)(windowHeight * 0.8),
@@ -90,7 +105,7 @@ public class UI extends JPanel implements ActionListener {
 	private void showMainScreen(Graphics2D g2) {
 		
 		// Issue: Can't getText() from textBox. See method call in ActionPerformed below.
-		textBox = new JTextField(10);
+		textBox = new JTextField("This is my first QR Code", 10);
 		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), windowWidth / 3, windowHeight / 15);
 		add(textBox);
 		
@@ -98,8 +113,7 @@ public class UI extends JPanel implements ActionListener {
 		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.05), windowWidth / 3, windowHeight / 15);
 		add(inputLabel);
 		
-		embedButton = createButton("Embed as QR Code", (int)(windowWidth * 0.4), (int)(windowHeight * 0.08),
-				   				 		   windowWidth / 6, windowHeight / 10);
+		embedButton = createButton("Embed", (int)(windowWidth * 0.4), (int)(windowHeight * 0.08), windowWidth / 6, windowHeight / 10);
 		add(embedButton);
 		embedButton.addActionListener(this);
 
@@ -107,54 +121,118 @@ public class UI extends JPanel implements ActionListener {
 		
 	    remove(startButton);
 	    repaint();
+	    
+	    g2.setColor(new Color(200, 200, 200));
 	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
+	    
+	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8);
+
+	    
+		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.75), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+	    
+	    if (showQR == true) {
+			g2.drawImage(qrCode, (int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8, this);
+
+	    }
+	    
+	    g2.fillRect(0, (int)(windowHeight * 0.28), windowWidth, 2);
+	    
+	    g2.setColor(new Color(150, 150, 150));
+		g2.setFont(labelFont);
+		g2.drawString("QR code", (int)(windowWidth * 0.63), (int)(windowHeight * 0.24));
+		g2.drawString("Cover image", (int)(windowWidth * 0.775), (int)(windowHeight * 0.24));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.51));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.73));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.95));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.51));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.73));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.95));
+		
+		g2.setFont(headingFont);
+		g2.drawString("Algorithm", (int)(windowWidth * 0.15), (int)(windowHeight * 0.27));
+		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
+		g2.drawString("1-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.39));
+		g2.drawString("3-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.61));
+		g2.drawString("5-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.83));	
+		
+		g2.setFont(bodyFont);
+		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit (LSB) \n"
+				              + "have high embedding capacities and easy implementation. Although, this \n"
+				              + "method comes with a price of higher perceptibility and image distortion, \n"
+				              + "which are undesired traits of any good steganography methods. The LSB \n"
+				              + "method embeds messages within the least significant bits of the cover image \n"
+				              + "and can use n of these bits to accomplish the embedding. The higher the \n"
+				              + "n, the higher the embedding capacity and the lower the output image quality.";
+	
+		String [] lines = lsbDescription.split("\n");
+		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
+		for (int lineCount = 0; lineCount < lines.length; lineCount++) {
+		    int x = (int)(windowWidth * 0.05);
+		    int y = (int)(windowHeight * 0.38) + lineCount * lineHeight;
+		    String line = lines[lineCount];
+		    g2.drawString(line, x, y);
+		}
+		
 	}
 	
 	private void showStegoInfo(Graphics2D g2) {
 		g2.setColor(Color.gray);
 		g2.fillRect(0, 0, windowWidth, windowHeight);
 	}
-	
-    private static JButton createButton(String text, int x, int y, int width, int height) {
-  	  JButton button = new JButton(text);
-      button.setBounds(x, y, width, height);
-  	  button.setOpaque(true);
-  	  button.setForeground(new Color(15, 179, 159));
-  	  Border line = new LineBorder(new Color(15, 179, 159));
-  	  Border margin = new EmptyBorder(5, 15, 5, 15);
-  	  Border compound = new CompoundBorder(line, margin);
-  	  button.setBorder(compound);
-        button.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-          	  button.setForeground(Color.white);
-          	  button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-          	  button.setBackground(new Color(22, 144, 129));
-          	  Border line = new LineBorder(new Color(22, 144, 129));
-          	  Border compound = new CompoundBorder(line, margin);
-          	  button.setBorder(compound);
-            }
-            public void mouseExited(MouseEvent e) {
-          	  button.setForeground(new Color(15, 179, 159));
-          	  Border line = new LineBorder(new Color(15, 179, 159));
-          	  button.setBackground(Color.white);
-          	  Border compound = new CompoundBorder(line, margin);
-          	  button.setBorder(compound);
-            }
-        });
-  	  
-  	  return button;
-  	} // end createButton	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == "Start") {
 			setState(UIState.MAIN);
 		}			
-		if (e.getActionCommand() == "Embed as QR Code") {
-			String text = textBox.getText();
-			System.out.println(text);
-		}			
+		if (e.getActionCommand() == "Embed") {
+			String text = textBox.getText().toString();
+			System.out.println("Embedded image: " + text);
+			showQR = true;
+		}					
+		
 		repaint();
 	}
+	
+	private static JButton createButton(String text, int x, int y, int width, int height) {
+		JButton button = new JButton(text);
+		button.setBounds(x, y, width, height);
+		button.setOpaque(true);
+		button.setForeground(new Color(15, 179, 159));
+		Border line = new LineBorder(new Color(15, 179, 159));
+		Border margin = new EmptyBorder(5, 15, 5, 15);
+		Border compound = new CompoundBorder(line, margin);
+		button.setBorder(compound);
+		button.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent e) {
+				button.setForeground(Color.white);
+				button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				button.setBackground(new Color(22, 144, 129));
+				Border line = new LineBorder(new Color(22, 144, 129));
+				Border compound = new CompoundBorder(line, margin);
+				button.setBorder(compound);
+			}
+			public void mouseExited(MouseEvent e) {
+				button.setForeground(new Color(15, 179, 159));
+				Border line = new LineBorder(new Color(15, 179, 159));
+				button.setBackground(Color.white);
+				Border compound = new CompoundBorder(line, margin);
+				button.setBorder(compound);
+			}
+		});
+
+		return button;
+	} // end createButton	
 	
 } //end UI class

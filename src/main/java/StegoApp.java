@@ -18,17 +18,33 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
  */
 public class StegoApp extends JFrame {
 		
+	public static BufferedImage coverImage, oneBitStegoImage, threeBitStegoImage, fiveBitStegoImage,
+								qrCodeOneBit, qrCodeThreeBit, qrCodeFiveBit;
+
 	public static void main(String[] args) {
         try {
             // Payload.generateQRCodeImage("This is my first QR Code", 350, 350, Payload.QR_CODE_IMAGE_PATH);
-        	
+        	coverImage = ImageIO.read(new File("assets/18.pgm"));
         	// Create stego image
-        	LSB testingStego = new LSB(ImageIO.read(new File("assets/18.pgm")), 1, "Testing message", 250, 250);
+        	LSB testingStego = new LSB(coverImage, 1, "Testing message", 250, 250);
 			testingStego.embed();
+			
+			LSB oneBit = new LSB(coverImage, 1, "Testing message", 512, 512);
+			oneBit.embed();
+			
+			LSB threeBit = new LSB(coverImage, 3, "Testing message", 512, 512);
+			threeBit.embed();
+			
+			LSB fiveBit = new LSB(coverImage, 5, "Testing message", 512, 512);
+			fiveBit.embed();
 			
 			// Save stego image
 			File stegofile = new File("OUTPUT/stego.png");
 			ImageIO.write(testingStego.getStegoImage(), "png", stegofile);
+			
+			oneBitStegoImage = oneBit.getStegoImage();
+			threeBitStegoImage = threeBit.getStegoImage();
+			fiveBitStegoImage = fiveBit.getStegoImage();
 			
 			// Save qrcode before image
 			Path path = FileSystems.getDefault().getPath("OUTPUT/qrCodeBefore.png");
@@ -36,6 +52,10 @@ public class StegoApp extends JFrame {
 			
 			// Extract QR code
 			BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(testingStego.extract());
+			
+			qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
+			qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
+			qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
 			
 			// Save QR code after
 			File qrfileafter = new File("OUTPUT/qrCodeAfter.png");
