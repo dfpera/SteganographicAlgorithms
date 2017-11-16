@@ -41,8 +41,8 @@ public class LSB extends Steganography {
 							"Payload Width: " + this.getPayload().getWidth() + "\n" +
 							"Payload Size: " + this.getPayloadSize());
 		
-		for (int x = 0; x < this.getCoverImage().getWidth(); x++) {
-			for (int y = 0; y < this.getCoverImage().getHeight(); y++) {
+		for (int y = 0; y < this.getCoverImage().getHeight(); y++) {
+			for (int x = 0; x < this.getCoverImage().getWidth(); x++) {
 				// Get color pixel
 				int colorChannel = this.getCoverImage().getRGB(x, y) & 0xff;
 				
@@ -53,8 +53,7 @@ public class LSB extends Steganography {
 //										"Payload x: " + embedPosition % this.getPayload().getWidth() + "\n" +
 //										"Payload y: " + embedPosition / (this.getPayload().getHeight()-1) + "\n");
 					// Retrieve bit value from QR code
-					embeddingBits = embeddingBits << 1;
-					embeddingBits = embeddingBits | ((this.getPayload().get(embedPosition % this.getPayload().getWidth(), embedPosition / this.getPayload().getWidth()) ? 0x1 : 0x0));
+					embeddingBits = (embeddingBits << 1) | ((this.getPayload().get(embedPosition % this.getPayload().getWidth(), embedPosition / this.getPayload().getWidth()) ? 0x1 : 0x0));
 							
 					// Ensure embed pointer doesn't overflow QR code
 					if (embedPosition < EMBED_SIZE-1) {
@@ -72,8 +71,14 @@ public class LSB extends Steganography {
 				colorChannel = (colorChannel & CLEAR_MSB) | embeddingBits;
 				System.out.println(	"\ncolorChannel AFTER: " + embeddingBits + "\n");
 				
-				// Set the new pixel value to the stegoImage
-				this.getStegoImage().setRGB(x, y, new Color(colorChannel, colorChannel, colorChannel).getRGB());
+				if (y == 478 && x == 386) {
+                    System.out.println("before set: " + Integer.toBinaryString((new Color(colorChannel, colorChannel, colorChannel).getRGB() & 0xff)) +"\n");
+                }
+                // Set the new pixel value to the stegoImage
+                this.getStegoImage().setRGB(x, y, new Color(colorChannel, colorChannel, colorChannel).getRGB());
+                if (y == 478 && x == 386) {
+                    System.out.println("after set: " + Integer.toBinaryString((this.getStegoImage().getRGB(x, y) & 0xff)) +"\n");
+                }
 			}
 		}
 	}
@@ -89,19 +94,17 @@ public class LSB extends Steganography {
 		//extractedData.setRegion(0, 0, this.getPayload().getWidth(), this.getPayload().getHeight());
 		
 		STEGO_LOOP:
-			for (int x = 0; x < this.getStegoImage().getWidth(); x++) {
-				for (int y = 0; y < this.getStegoImage().getHeight(); y++) {
+			for (int y = 0; y < this.getStegoImage().getHeight(); y++) {
+				for (int x = 0; x < this.getStegoImage().getWidth(); x++) {
 					// Get color pixel
 					int colorChannel = this.getStegoImage().getRGB(x, y) & 0xff;
 					
 					// Extract enough QR code bits before moving to next pixel
 					for (int i = 0; i < bitDepth; i++) {
 						
-						if (((colorChannel >> (bitDepth-i-1)) & 0x01) == 1) {
+						if (((colorChannel >> (bitDepth-i-1)) & 0x1) == 0x1) {
 							extractedData.set(embedPosition % this.getPayload().getWidth(), embedPosition / this.getPayload().getWidth());
-						} else {
-							extractedData.unset(embedPosition % this.getPayload().getWidth(), embedPosition / this.getPayload().getWidth());
-						}
+						} 
 								
 						// Ensure embed pointer doesn't overflow QR code
 						if (embedPosition < EMBED_SIZE-1) {
