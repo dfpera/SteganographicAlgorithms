@@ -25,21 +25,15 @@ public class LSB extends Steganography {
 		int tempMask = 0;
 		for (int i = 0; i < bitDepth; i++) {
 			tempMask += (int) Math.pow(2, i);
-			System.out.println(	"tempMask: " + tempMask + "\n");
 		}
 		final int ONLY_LSB = tempMask;
 		
 		// Create Mask to clear all bits except LSBs.
 		final int CLEAR_MSB = ONLY_LSB ^ 0xFF;
-		System.out.println(	"LSB Mask: " + ONLY_LSB + "\n" +
-							"MSB Mask: " + CLEAR_MSB + "\n");
 		
 		// Track position for embedding data
 		int embedPosition = 0;
 		final int EMBED_SIZE = this.getPayloadSize();
-		System.out.println(	"Payload Height: " + this.getPayload().getHeight() + "\n" +
-							"Payload Width: " + this.getPayload().getWidth() + "\n" +
-							"Payload Size: " + this.getPayloadSize());
 		
 		for (int y = 0; y < this.getCoverImage().getHeight(); y++) {
 			for (int x = 0; x < this.getCoverImage().getWidth(); x++) {
@@ -49,9 +43,6 @@ public class LSB extends Steganography {
 				// Get enough QR code bits to embed into one pixel
 				int embeddingBits = 0;
 				for (int i = 0; i < bitDepth; i++) {
-//					System.out.println(	"\nPOSITION: " + embedPosition + "\n" +
-//										"Payload x: " + embedPosition % this.getPayload().getWidth() + "\n" +
-//										"Payload y: " + embedPosition / (this.getPayload().getHeight()-1) + "\n");
 					// Retrieve bit value from QR code
 					embeddingBits = (embeddingBits << 1) | ((this.getPayload().get(embedPosition % this.getPayload().getWidth(), embedPosition / this.getPayload().getWidth()) ? 0x1 : 0x0));
 							
@@ -62,23 +53,12 @@ public class LSB extends Steganography {
 						embedPosition = 0;
 					}
 				}
-				System.out.println(	"\nembeddingBits: " + embeddingBits + "\n" +
-						"embedPosition: " + embedPosition + "\n");
 				
-				System.out.println(	"\ncolorChannel BEFORE: " + embeddingBits + "\n");
 				// Embed the bits into the pixel
-				//embeddingBits = embeddingBits & ONLY_LSB;
 				colorChannel = (colorChannel & CLEAR_MSB) | embeddingBits;
-				System.out.println(	"\ncolorChannel AFTER: " + embeddingBits + "\n");
 				
-				if (y == 478 && x == 386) {
-                    System.out.println("before set: " + Integer.toBinaryString((new Color(colorChannel, colorChannel, colorChannel).getRGB() & 0xff)) +"\n");
-                }
                 // Set the new pixel value to the stegoImage
                 this.getStegoImage().setRGB(x, y, new Color(colorChannel, colorChannel, colorChannel).getRGB());
-                if (y == 478 && x == 386) {
-                    System.out.println("after set: " + Integer.toBinaryString((this.getStegoImage().getRGB(x, y) & 0xff)) +"\n");
-                }
 			}
 		}
 	}
@@ -91,9 +71,8 @@ public class LSB extends Steganography {
 		
 		// Create BitMatrix for QR code
 		BitMatrix extractedData = new BitMatrix(this.getPayload().getWidth(), this.getPayload().getHeight());
-		//extractedData.setRegion(0, 0, this.getPayload().getWidth(), this.getPayload().getHeight());
 		
-		STEGO_LOOP:
+		STEGO_LOOP:	// Used to break out of loop once data is extracted
 			for (int y = 0; y < this.getStegoImage().getHeight(); y++) {
 				for (int x = 0; x < this.getStegoImage().getWidth(); x++) {
 					// Get color pixel
@@ -101,7 +80,7 @@ public class LSB extends Steganography {
 					
 					// Extract enough QR code bits before moving to next pixel
 					for (int i = 0; i < bitDepth; i++) {
-						
+						// Shift bits to extract each bit one by one from MSB to LSB
 						if (((colorChannel >> (bitDepth-i-1)) & 0x1) == 0x1) {
 							extractedData.set(embedPosition % this.getPayload().getWidth(), embedPosition / this.getPayload().getWidth());
 						} 
