@@ -6,6 +6,7 @@ import com.google.zxing.common.BitMatrix;
 public class EMD extends Steganography {
 	private int n; // Used to calculate the (2n + 1)-ary digit
 	private int position; // Used to determine the position in the cover image when embedding or extracting
+	private int secretLength;
 
 	public EMD(BufferedImage coverImage, int n, String message, int payloadWidth, int payloadHeight) {
 		super(coverImage, message, payloadWidth, payloadHeight);
@@ -22,12 +23,12 @@ public class EMD extends Steganography {
 
 	@Override
 	public void embed() {
-		// Reset position property
-		position = 0;
-		
 		// Step 1 convert payload to (2n+1)-ary digit
 		String digits = bitMatrixToBase2NPlus1();
 		int digitPosition = 0;
+		
+		// Set secret length for later extraction
+		this.secretLength = digits.length();
 		
 		// Iterate through cover image
 		for (position = 0; position < (getCoverImage().getHeight() * getCoverImage().getWidth()); position += n) {
@@ -40,7 +41,7 @@ public class EMD extends Steganography {
 			digitPosition++;
 			
 			// Reset digit position if all digits have been embedded
-			if (digitPosition >= digits.length()) {
+			if (digitPosition >= this.secretLength) {
 				digitPosition = 0;
 			}
 		}
@@ -48,8 +49,32 @@ public class EMD extends Steganography {
 
 	@Override
 	public BitMatrix extract() {
-		// TODO implement extract
-		return null;
+		// Create BitMatrix for QR code
+		BitMatrix extractedData = new BitMatrix(this.getPayload().getWidth(), this.getPayload().getHeight());
+				
+		// Initialize secret digit string
+		String binaryDigits = "";
+		int digitPosition = 0;
+		
+		// Iterate through stego image to extract image
+		for (position = 0; position < (getStegoImage().getHeight() * getStegoImage().getWidth()); position += n) {
+			// Extract secret digit
+			binaryDigits += base10ToBinary(extractionFu());
+			digitPosition++;
+			
+			if (digitPosition >= this.secretLength) {
+				break;
+			}
+		}
+		
+		// Use binaryDigits to re-create BitMatrix
+		for (int i = 0; i < (this.getPayload().getWidth() * this.getPayload().getHeight()); i++) {
+			if (binaryDigits.charAt(i) == '1') {
+				extractedData.set(i % this.getPayload().getWidth(), i / this.getPayload().getWidth());
+			}
+		}
+			
+		return extractedData;
 	}
 	
 	/*
@@ -68,6 +93,16 @@ public class EMD extends Steganography {
 			}
 		}
 		return Integer.toString(Integer.parseInt(binaryNum, 2), 2*n+1);
+	}
+	
+	/*
+	 * Convert (2n+1)-ary digit to binary
+	 * 
+	 * @param String - a 1 character secret digit
+	 * @return String - 
+	 */
+	private String base10ToBinary(int digit) {
+		return Integer.toString(digit, 2);
 	}
 	
 	/*
