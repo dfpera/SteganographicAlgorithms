@@ -25,6 +25,18 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+/**
+ * The UI class implements the GUI, which enables the user to:
+ * - Type their own secret message using the provided text box
+ * - Embed their message as a QR code into the cover image using different algorithms
+ * - Dynamically alter their message and view the resulting QR code and stego-images instantly
+ * - (WIP) Randomize the cover image used to store the message
+ * - (WIP) Enable the user to learn more about each algorithm and their 
+ * 
+ * @author ngmandyn
+ *
+ */
+
 public class UI extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
@@ -39,23 +51,38 @@ public class UI extends JPanel implements ActionListener {
 	private Font titleFont = new Font("Mononoki", Font.BOLD, 65);
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
-	private Font bodyFont = new Font("Arial", Font.PLAIN, 14);
+	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
 	private boolean showQR;
 	
 	private BufferedImage qrCode;
 	
 	public UI(JFrame frame) {
 		super();
-		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
+		
 		this.setLayout(null);
+		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		state = UIState.HOME;
 		try {
 			qrCode = ImageIO.read(new File("OUTPUT/qrCodeBefore.png")); 
 		} catch (Exception e) {
 			System.out.println("Cannot load the provided image");
-		}
+		}		
 		
-	}
+		textBox = new JTextField("This is my first QR Code", 10);
+		add(textBox);
+		
+		inputLabel = new JLabel("Enter your secret message: ");
+		add(inputLabel);
+		
+		startButton = createButton("Start",(int)(windowWidth * 0.75), (int)(windowHeight * 0.8), windowWidth / 6, windowHeight / 10);
+		add(startButton);
+		startButton.addActionListener(this);
+		
+		embedButton = createButton("Embed", (int)(windowWidth * 0.4), (int)(windowHeight * 0.08), windowWidth / 6, windowHeight / 10);
+		add(embedButton);
+		embedButton.addActionListener(this);
+		
+	} // end UI
 
 	public void setState(UIState nextState) {
 	    state = nextState;
@@ -64,15 +91,16 @@ public class UI extends JPanel implements ActionListener {
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			
+		
+		// Logic for switching between UI states, different screens shown
 		switch (state) {
-			case HOME:
+			case HOME: // First screen user sees
 				showHomeScreen(g2);
 				break;
-			case MAIN:
+			case MAIN: // Main screen after clicking Start
 				showMainScreen(g2);
 				break;
-			case STEGO_INFO:
+			case STEGO_INFO: // Modals that allow user to learn more about algorithms
 				showStegoInfo(g2);
 				break;
 		}
@@ -80,7 +108,6 @@ public class UI extends JPanel implements ActionListener {
 	} // end paint
 	
 	private void showHomeScreen(Graphics2D g2) {
-
 		for (int i = 0; i < windowWidth; i += 10) {
 			for (int j = 0; j < windowHeight; j += 10) {
 				if (Math.random() < 0.5) {
@@ -94,33 +121,16 @@ public class UI extends JPanel implements ActionListener {
 		g2.fillRect(0, windowHeight / 4, windowWidth, windowHeight * 3 / 4);
 		g2.setColor(new Color(22, 144, 129));
 		g2.setFont(titleFont);
-		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);
-	        
-		startButton = createButton("Start",(int)(windowWidth * 0.75), (int)(windowHeight * 0.8),
-								   windowWidth / 6, windowHeight / 10);
-		add(startButton);
-		startButton.addActionListener(this);
+		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);	        
+		embedButton.setVisible(false);	
 	}
 	
 	private void showMainScreen(Graphics2D g2) {
 		
-		// Issue: Can't getText() from textBox. See method call in ActionPerformed below.
-		textBox = new JTextField("This is my first QR Code", 10);
-		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), windowWidth / 3, windowHeight / 15);
-		add(textBox);
-		
-		inputLabel = new JLabel("Enter your secret message: ");
-		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.05), windowWidth / 3, windowHeight / 15);
-		add(inputLabel);
-		
-		embedButton = createButton("Embed", (int)(windowWidth * 0.4), (int)(windowHeight * 0.08), windowWidth / 6, windowHeight / 10);
-		add(embedButton);
-		embedButton.addActionListener(this);
-
-		setVisible(true);
-		
 	    remove(startButton);
-	    repaint();
+		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), windowWidth / 3, windowHeight / 15);
+		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.05), windowWidth / 3, windowHeight / 15);
+		embedButton.setVisible(true);
 	    
 	    g2.setColor(new Color(200, 200, 200));
 	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
@@ -160,7 +170,7 @@ public class UI extends JPanel implements ActionListener {
 		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.95));
 		
 		g2.setFont(headingFont);
-		g2.drawString("Algorithm", (int)(windowWidth * 0.15), (int)(windowHeight * 0.27));
+		g2.drawString("Algorithm", (int)(windowWidth * 0.05), (int)(windowHeight * 0.26));
 		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
 		g2.drawString("1-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.39));
 		g2.drawString("3-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.61));
@@ -183,7 +193,6 @@ public class UI extends JPanel implements ActionListener {
 		    String line = lines[lineCount];
 		    g2.drawString(line, x, y);
 		}
-		
 	}
 	
 	private void showStegoInfo(Graphics2D g2) {
@@ -197,38 +206,42 @@ public class UI extends JPanel implements ActionListener {
 			setState(UIState.MAIN);
 		}			
 		if (e.getActionCommand() == "Embed") {
-			String text = textBox.getText().toString();
-			System.out.println("Embedded image: " + text);
+			String secretMessage = textBox.getText().toString();
+			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
-		}					
-		
+		}						
 		repaint();
 	}
 	
+	/* 
+	 * Create a button 
+	 * 
+	 * @param text - the text that appears on the button
+	 * @param x - the x position of the top-left corner of the button
+	 * @param y - the y position of the top-left corner of the button
+	 * @param width - the width of the button
+	 * @param height - the height of button
+	 */
 	private static JButton createButton(String text, int x, int y, int width, int height) {
 		JButton button = new JButton(text);
+		Color teal = new Color(22, 144, 129);
 		button.setBounds(x, y, width, height);
 		button.setOpaque(true);
-		button.setForeground(new Color(15, 179, 159));
-		Border line = new LineBorder(new Color(15, 179, 159));
-		Border margin = new EmptyBorder(5, 15, 5, 15);
-		Border compound = new CompoundBorder(line, margin);
+		button.setForeground(teal); // color of text on button
+		button.setBackground(Color.white); // background color of button
+		Border line = new LineBorder(teal);
+		Border padding = new EmptyBorder(0, 0, 0, 0);
+		Border compound = new CompoundBorder(line, padding);
 		button.setBorder(compound);
 		button.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent e) {
-				button.setForeground(Color.white);
+				button.setForeground(Color.white); // color of text on button
+				button.setBackground(teal); // background color of button
 				button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				button.setBackground(new Color(22, 144, 129));
-				Border line = new LineBorder(new Color(22, 144, 129));
-				Border compound = new CompoundBorder(line, margin);
-				button.setBorder(compound);
 			}
 			public void mouseExited(MouseEvent e) {
-				button.setForeground(new Color(15, 179, 159));
-				Border line = new LineBorder(new Color(15, 179, 159));
+				button.setForeground(teal);
 				button.setBackground(Color.white);
-				Border compound = new CompoundBorder(line, margin);
-				button.setBorder(compound);
 			}
 		});
 
