@@ -6,6 +6,8 @@ import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import java.awt.*;
 
@@ -18,7 +20,8 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
  */
 public class StegoApp extends JFrame {
 		
-	public static BufferedImage coverImage, oneBitStegoImage, threeBitStegoImage, fiveBitStegoImage,
+	public static BufferedImage coverImage;
+	public static BufferedImage oneBitStegoImage, threeBitStegoImage, fiveBitStegoImage,
 								qrCodeOneBit, qrCodeThreeBit, qrCodeFiveBit;
 
 	public static void main(String[] args) {
@@ -29,13 +32,13 @@ public class StegoApp extends JFrame {
         	LSB testingStego = new LSB(coverImage, 1, "Testing message", 250, 250);
 			testingStego.embed();
 			
-			LSB oneBit = new LSB(coverImage, 1, "Testing message", 512, 512);
+			LSB oneBit = new LSB(coverImage, 1, UI.secretMessage, 512, 512);
 			oneBit.embed();
 			
-			LSB threeBit = new LSB(coverImage, 3, "Testing message", 512, 512);
+			LSB threeBit = new LSB(coverImage, 3, UI.secretMessage, 512, 512);
 			threeBit.embed();
 			
-			LSB fiveBit = new LSB(coverImage, 5, "Testing message", 512, 512);
+			LSB fiveBit = new LSB(coverImage, 5, UI.secretMessage, 512, 512);
 			fiveBit.embed();
 			
 			// Save stego image
@@ -72,17 +75,25 @@ public class StegoApp extends JFrame {
             System.out.println("Could not generate QR Code or load image, IOException :: " + e.getMessage());
         }
         
-		new StegoApp("Steganography");
+		new StegoApp("StegoCompare");
 
     } // end main
 	
 	public StegoApp(String title) {
 		super(title);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		UI stegoUI = new UI(this);
-		this.add(stegoUI);
+		
+		UI mainPanel = new UI(null);
+		this.add(mainPanel);
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		
+//		ScrollPanel scrollUI = new ScrollPanel(null);
+//		JScrollPane scroll = new JScrollPane(scrollUI);
+//        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+//        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//        scroll.setBounds(0, 0, 300, 600);
+//		this.add(scroll);
 	}
 }

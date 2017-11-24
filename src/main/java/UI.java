@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -20,10 +21,13 @@ import javax.swing.JTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import com.google.zxing.client.j2se.MatrixToImageWriter;
 
 /**
  * The UI class implements the GUI, which enables the user to:
@@ -32,9 +36,6 @@ import javax.swing.border.LineBorder;
  * - Dynamically alter their message and view the resulting QR code and stego-images instantly
  * - (WIP) Randomize the cover image used to store the message
  * - (WIP) Enable the user to learn more about each algorithm and their 
- * 
- * @author ngmandyn
- *
  */
 
 public class UI extends JPanel implements ActionListener {
@@ -52,9 +53,8 @@ public class UI extends JPanel implements ActionListener {
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
-	private boolean showQR;
-	
-	private BufferedImage qrCode;
+	public static boolean showQR;
+	public static String secretMessage = "Enter message";
 	
 	public UI(JFrame frame) {
 		super();
@@ -62,25 +62,24 @@ public class UI extends JPanel implements ActionListener {
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		state = UIState.HOME;
-		try {
-			qrCode = ImageIO.read(new File("OUTPUT/qrCodeBefore.png")); 
-		} catch (Exception e) {
-			System.out.println("Cannot load the provided image");
-		}		
 		
 		textBox = new JTextField("This is my first QR Code", 10);
 		add(textBox);
+		textBox.setVisible(false);
 		
 		inputLabel = new JLabel("Enter your secret message: ");
 		add(inputLabel);
+		inputLabel.setVisible(false);	
 		
 		startButton = createButton("Start",(int)(windowWidth * 0.75), (int)(windowHeight * 0.8), windowWidth / 6, windowHeight / 10);
 		add(startButton);
 		startButton.addActionListener(this);
+		startButton.setVisible(true);	
 		
 		embedButton = createButton("Embed", (int)(windowWidth * 0.4), (int)(windowHeight * 0.08), windowWidth / 6, windowHeight / 10);
-		add(embedButton);
 		embedButton.addActionListener(this);
+		embedButton.setVisible(false);	
+
 		
 	} // end UI
 
@@ -99,6 +98,15 @@ public class UI extends JPanel implements ActionListener {
 				break;
 			case MAIN: // Main screen after clicking Start
 				showMainScreen(g2);
+				add(embedButton);
+				ScrollPanel scrollUI = new ScrollPanel(null);
+				JScrollPane scroll = new JScrollPane(scrollUI);
+		        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		        scroll.setBounds(0, (int)(windowHeight * 0.285), windowWidth, (int)(windowHeight * 0.715));
+		        scroll.getVerticalScrollBar().setUnitIncrement(16);
+		        scroll.setBorder(null);
+				this.add(scroll);
 				break;
 			case STEGO_INFO: // Modals that allow user to learn more about algorithms
 				showStegoInfo(g2);
@@ -107,7 +115,7 @@ public class UI extends JPanel implements ActionListener {
 		
 	} // end paint
 	
-	private void showHomeScreen(Graphics2D g2) {
+	private void showHomeScreen(Graphics2D g2) {	
 		for (int i = 0; i < windowWidth; i += 10) {
 			for (int j = 0; j < windowHeight; j += 10) {
 				if (Math.random() < 0.5) {
@@ -122,40 +130,43 @@ public class UI extends JPanel implements ActionListener {
 		g2.setColor(new Color(22, 144, 129));
 		g2.setFont(titleFont);
 		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);	        
-		embedButton.setVisible(false);	
 	}
 	
 	private void showMainScreen(Graphics2D g2) {
+		g2.setColor(new Color(240, 240, 240));
+		g2.fillRect(0, 0, windowWidth, windowWidth);
 		
 	    remove(startButton);
 		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), windowWidth / 3, windowHeight / 15);
 		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.05), windowWidth / 3, windowHeight / 15);
 		embedButton.setVisible(true);
-	    
-	    g2.setColor(new Color(200, 200, 200));
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
-	    
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8);
-
+		textBox.setVisible(true);
+		inputLabel.setVisible(true);
 	    
 		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.75), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
-	    
-	    if (showQR == true) {
-			g2.drawImage(qrCode, (int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.31), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.53), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.75), windowWidth / 8, windowWidth / 8, this);
 
+	    g2.setColor(new Color(200, 200, 200));
+	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
+	    	    
+	    if (showQR == true) {
+			LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 512, 512);
+			oneBit.embed();
+			StegoApp.oneBitStegoImage = oneBit.getStegoImage();
+			StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
+			
+			LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 512, 512);
+			threeBit.embed();
+			StegoApp.threeBitStegoImage = threeBit.getStegoImage();
+			StegoApp.qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
+			
+			LSB fiveBit = new LSB(StegoApp.coverImage, 5, secretMessage, 512, 512);
+			fiveBit.embed();
+			StegoApp.fiveBitStegoImage = fiveBit.getStegoImage();
+			StegoApp.qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
 	    }
-	    
+	    	    
+		g2.setFont(headingFont);
+		g2.drawString("Algorithms", (int)(windowWidth * 0.05), (int)(windowHeight * 0.26));
 	    g2.fillRect(0, (int)(windowHeight * 0.28), windowWidth, 2);
 	    
 	    g2.setColor(new Color(150, 150, 150));
@@ -168,9 +179,9 @@ public class UI extends JPanel implements ActionListener {
 		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.51));
 		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.73));
 		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.95));
-		
+	
+		/////
 		g2.setFont(headingFont);
-		g2.drawString("Algorithm", (int)(windowWidth * 0.05), (int)(windowHeight * 0.26));
 		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
 		g2.drawString("1-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.39));
 		g2.drawString("3-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.61));
@@ -193,7 +204,7 @@ public class UI extends JPanel implements ActionListener {
 		    String line = lines[lineCount];
 		    g2.drawString(line, x, y);
 		}
-	}
+	} // end showMainScreen
 	
 	private void showStegoInfo(Graphics2D g2) {
 		g2.setColor(Color.gray);
@@ -206,7 +217,7 @@ public class UI extends JPanel implements ActionListener {
 			setState(UIState.MAIN);
 		}			
 		if (e.getActionCommand() == "Embed") {
-			String secretMessage = textBox.getText().toString();
+			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
 		}						
