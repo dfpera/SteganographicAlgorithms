@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -30,7 +31,7 @@ import javax.swing.border.LineBorder;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 
 /**
- * The UI class implements the GUI, which enables the user to:
+ * The UI class implements the main GUI, which enables the user to:
  * - Type their own secret message using the provided text box
  * - Embed their message as a QR code into the cover image using different algorithms
  * - Dynamically alter their message and view the resulting QR code and stego-images instantly
@@ -46,7 +47,7 @@ public class UI extends JPanel implements ActionListener {
 	private int windowHeight = (int)(screenSize.height * 0.9);
 	private static UIState state;
 	
-	private JButton startButton, embedButton;
+	private JButton startButton, embedButton, randomizeButton;
 	private JTextField textBox;
 	private JLabel inputLabel;
 	private Font titleFont = new Font("Mononoki", Font.BOLD, 65);
@@ -54,7 +55,7 @@ public class UI extends JPanel implements ActionListener {
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
 	public static boolean showQR;
-	public static String secretMessage = "Enter message";
+	public static String secretMessage = "Enter your secret message";
 	
 	public UI(JFrame frame) {
 		super();
@@ -63,11 +64,11 @@ public class UI extends JPanel implements ActionListener {
 		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		state = UIState.HOME;
 		
-		textBox = new JTextField("This is my first QR Code", 10);
+		textBox = new JTextField("Enter your secret message", 10);
 		add(textBox);
 		textBox.setVisible(false);
 		
-		inputLabel = new JLabel("Enter your secret message: ");
+		inputLabel = new JLabel("Type and embed a secret message:");
 		add(inputLabel);
 		inputLabel.setVisible(false);	
 		
@@ -76,9 +77,13 @@ public class UI extends JPanel implements ActionListener {
 		startButton.addActionListener(this);
 		startButton.setVisible(true);	
 		
-		embedButton = createButton("Embed", (int)(windowWidth * 0.4), (int)(windowHeight * 0.08), windowWidth / 6, windowHeight / 10);
+		embedButton = createButton("Embed Text", (int)(windowWidth * 0.36), (int)(windowHeight * 0.09), windowWidth / 8, windowHeight / 12);
 		embedButton.addActionListener(this);
 		embedButton.setVisible(false);	
+		
+		randomizeButton = createButton("Randomize Image", (int)(windowWidth * 0.495), (int)(windowHeight * 0.09), windowWidth / 8, windowHeight / 12);
+		randomizeButton.addActionListener(this);
+		randomizeButton.setVisible(false);	
 
 		
 	} // end UI
@@ -99,11 +104,12 @@ public class UI extends JPanel implements ActionListener {
 			case MAIN: // Main screen after clicking Start
 				showMainScreen(g2);
 				add(embedButton);
+				add(randomizeButton);
 				ScrollPanel scrollUI = new ScrollPanel(null);
 				JScrollPane scroll = new JScrollPane(scrollUI);
 		        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		        scroll.setBounds(0, (int)(windowHeight * 0.285), windowWidth, (int)(windowHeight * 0.715));
+		        scroll.setBounds(0, (int)(windowHeight * 0.281), windowWidth, (int)(windowHeight * 0.719));
 		        scroll.getVerticalScrollBar().setUnitIncrement(16);
 		        scroll.setBorder(null);
 				this.add(scroll);
@@ -133,27 +139,39 @@ public class UI extends JPanel implements ActionListener {
 	}
 	
 	private void showMainScreen(Graphics2D g2) {
-		g2.setColor(new Color(240, 240, 240));
-		g2.fillRect(0, 0, windowWidth, windowWidth);
 		
 	    remove(startButton);
-		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), windowWidth / 3, windowHeight / 15);
+		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), (int)(windowWidth * 0.3), windowHeight / 15);
 		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.05), windowWidth / 3, windowHeight / 15);
 		embedButton.setVisible(true);
+		randomizeButton.setVisible(true);
 		textBox.setVisible(true);
 		inputLabel.setVisible(true);
+		
+		g2.setColor(new Color(230, 230, 230));
+		g2.fillRect(0, 0, windowWidth, windowWidth);
+		
+		GradientPaint background = new GradientPaint(0, (int)(windowHeight * 0.22), new Color(230, 230, 230, 255), 0, (int)(windowHeight * 0.28), Color.white);
+		g2.setPaint(background);
+		g2.fillRect(0, (int)(windowHeight * 0.22), windowWidth, (int)(windowHeight * 0.28));
+		
+	    g2.setColor(new Color(200, 200, 200)); // draw underline
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
 	    
-		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.75), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
-
-	    g2.setColor(new Color(200, 200, 200));
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
+		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
 	    	    
 	    if (showQR == true) {
+	   	
+			g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+	    	
 			LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 512, 512);
 			oneBit.embed();
 			StegoApp.oneBitStegoImage = oneBit.getStegoImage();
 			StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
 			
+	    	StegoApp.qrCode = MatrixToImageWriter.toBufferedImage(oneBit.getPayload());
+			g2.drawImage(StegoApp.qrCode, (int)(windowWidth * 0.64), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+
 			LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 512, 512);
 			threeBit.embed();
 			StegoApp.threeBitStegoImage = threeBit.getStegoImage();
@@ -165,46 +183,20 @@ public class UI extends JPanel implements ActionListener {
 			StegoApp.qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
 	    }
 	    	    
+	    g2.setColor(new Color(150, 150, 150));
 		g2.setFont(headingFont);
 		g2.drawString("Algorithms", (int)(windowWidth * 0.05), (int)(windowHeight * 0.26));
-	    g2.fillRect(0, (int)(windowHeight * 0.28), windowWidth, 2);
 	    
-	    g2.setColor(new Color(150, 150, 150));
 		g2.setFont(labelFont);
-		g2.drawString("QR code", (int)(windowWidth * 0.63), (int)(windowHeight * 0.24));
-		g2.drawString("Cover image", (int)(windowWidth * 0.775), (int)(windowHeight * 0.24));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.51));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.73));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.95));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.51));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.73));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.95));
-	
-		/////
-		g2.setFont(headingFont);
-		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
-		g2.drawString("1-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.39));
-		g2.drawString("3-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.61));
-		g2.drawString("5-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.83));	
+		g2.drawString("QR code", (int)(windowWidth * 0.68), (int)(windowHeight * 0.24));
+		g2.drawString("Cover image", (int)(windowWidth * 0.825), (int)(windowHeight * 0.24));
 		
-		g2.setFont(bodyFont);
-		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit (LSB) \n"
-				              + "have high embedding capacities and easy implementation. Although, this \n"
-				              + "method comes with a price of higher perceptibility and image distortion, \n"
-				              + "which are undesired traits of any good steganography methods. The LSB \n"
-				              + "method embeds messages within the least significant bits of the cover image \n"
-				              + "and can use n of these bits to accomplish the embedding. The higher the \n"
-				              + "n, the higher the embedding capacity and the lower the output image quality.";
-	
-		String [] lines = lsbDescription.split("\n");
-		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
-		for (int lineCount = 0; lineCount < lines.length; lineCount++) {
-		    int x = (int)(windowWidth * 0.05);
-		    int y = (int)(windowHeight * 0.38) + lineCount * lineHeight;
-		    String line = lines[lineCount];
-		    g2.drawString(line, x, y);
-		}
+		//underline
+		g2.setColor(new Color(200, 200, 200));
+		g2.fillRect(0, (int)(windowHeight * 0.28), windowWidth, 1);
+
 	} // end showMainScreen
+	
 	
 	private void showStegoInfo(Graphics2D g2) {
 		g2.setColor(Color.gray);
@@ -216,11 +208,21 @@ public class UI extends JPanel implements ActionListener {
 		if (e.getActionCommand() == "Start") {
 			setState(UIState.MAIN);
 		}			
-		if (e.getActionCommand() == "Embed") {
+		if (e.getActionCommand() == "Embed Text") {
 			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
-		}						
+		}	
+		if (e.getActionCommand() == "Randomize Image") {
+			try {
+				StegoApp.coverImage = StegoApp.getNewImage();
+			} catch (IOException e1) {
+				System.out.println("Could not load new image, IOException :: " + e1.getMessage());
+			}
+			secretMessage = textBox.getText().toString();
+			System.out.println("Embedded text: " + secretMessage);
+			showQR = true;
+		}
 		repaint();
 	}
 	
