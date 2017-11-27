@@ -12,10 +12,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.media.jai.Histogram;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JFrame;
@@ -44,24 +46,36 @@ public class ScrollPanel extends JPanel implements ActionListener {
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
-	
-	private BufferedImage qrCode;
+	private JButton learnButton;
+	public static boolean showModal;
+    HistogramCreator histogramCreator;
 	
 	public ScrollPanel(JFrame frame) {
 		super();	
 		this.setLayout(null);
-		this.setPreferredSize(new Dimension(windowWidth, windowHeight));						
+		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
+		
+		learnButton = createButton("Learn More",(int)(windowWidth * 0.05), (int)(windowHeight * 0.28), windowWidth / 8, windowHeight / 12);
+		add(learnButton);
+		learnButton.addActionListener(this);
+		learnButton.setVisible(true);
+		
+        histogramCreator = new HistogramCreator();
 	}
 	
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		showMainScreen(g2);		
+
+		showAlgorithmList(g2);		
+		
 	} // end paint
 	
-	private void showMainScreen(Graphics2D g2) {
-		g2.setColor(Color.white);
+	private void showAlgorithmList(Graphics2D g2) {
+		g2.setColor(new Color(255, 255, 255));
 		g2.fillRect(0, 0, windowWidth, windowWidth);
+		
+		learnButton.setVisible(true);
 		
 		GradientPaint background = new GradientPaint(0, 0, new Color(200, 200, 200, 0), 0, windowHeight, Color.white);
 		g2.setPaint(background);
@@ -76,7 +90,6 @@ public class ScrollPanel extends JPanel implements ActionListener {
 	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8);
 	    
 	    if (UI.showQR == true) {
-//			g2.drawImage(qrCode, (int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
 			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
 			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8, this);
 			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8, this);
@@ -98,7 +111,9 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.04));
 		g2.drawString("1-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.100));
 		g2.drawString("3-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.325));
-		g2.drawString("5-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.540));	
+		g2.drawString("5-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.540));
+		g2.drawString("Exploiting Modification Direction (EMD)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.70));
+
 		
 		g2.setFont(bodyFont);
 		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit (LSB) have \n"
@@ -117,23 +132,27 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		    String line = lines[lineCount];
 		    g2.drawString(line, x, y);
 		}
+
+		
+        Histogram histogramLSB = histogramCreator.createHistogram(StegoApp.coverImage);
+        addHistogram(StegoApp.coverImage, histogramLSB, 50, 250, 250, 200);
+        
+		//underline
+		g2.setColor(new Color(200, 200, 200));
+		g2.fillRect(0, (int)(windowHeight * 0.665), windowWidth, 1);
+		
 	} // end showMainScreen
 	
 	private void showStegoInfo(Graphics2D g2) {
-		g2.setColor(Color.gray);
-		g2.fillRect(0, 0, windowWidth, windowHeight);
+		learnButton.setVisible(false);
 	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-//		if (e.getActionCommand() == "Start") {
-//			setState(UIState.MAIN);
-//		}			
-//		if (e.getActionCommand() == "Embed") {
-//			String secretMessage = textBox.getText().toString();
-//			System.out.println("Embedded text: " + secretMessage);
-//			showQR = true;
-//		}						
+		if (e.getActionCommand() == "Learn More") {
+
+		}								
 		repaint();
 	}
 	
@@ -171,5 +190,24 @@ public class ScrollPanel extends JPanel implements ActionListener {
 
 		return button;
 	} // end createButton	
+	
+    public void repaint() {
+        this.setVisible(true);
+    }
+	
+    public void addHistogram(BufferedImage image, Histogram histogram, int x, int y, int w, int h) {
+    	addHistogram(image, histogram, true, true, true, x, y, w, h);
+    }
+    
+    public void addHistogram(BufferedImage image, Histogram histogram, 
+    		                 boolean plotRed, boolean plotGreen, boolean plotBlue,
+    		                 int x, int y, int w, int h) {
+    	HistogramPanel hp = new HistogramPanel(histogram.getBins(), plotRed, plotGreen, plotBlue);
+    	hp.setBounds(x, y, w, h);
+    	this.add(hp);
+    	
+    }
+    
+
 	
 } //end UI class

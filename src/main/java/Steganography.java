@@ -22,7 +22,7 @@ public abstract class Steganography {
 	public Steganography(BufferedImage coverImage, String message, int payloadWidth, int payloadHeight) {
 		try {
 			this.coverImage = coverImage;
-			this.stegoImage = new BufferedImage(coverImage.getWidth(), coverImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			this.stegoImage = new BufferedImage(coverImage.getWidth(), coverImage.getHeight(), BufferedImage.TYPE_USHORT_GRAY);
 			this.payload = Payload.getQRCodeImage(message, payloadWidth, payloadHeight);
 			this.payloadSize =  payloadWidth * payloadHeight;
 		} catch (WriterException e) {

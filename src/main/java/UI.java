@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -17,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.media.jai.Histogram;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JFrame;
@@ -53,9 +53,12 @@ public class UI extends JPanel implements ActionListener {
 	private Font titleFont = new Font("Mononoki", Font.BOLD, 65);
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
-	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
-	public static boolean showQR;
+	public static boolean showQR, showModal;
 	public static String secretMessage = "Enter your secret message";
+
+	Histogram histogramGrayscale;
+	HistogramCreator histogramCreator;
+	
 	
 	public UI(JFrame frame) {
 		super();
@@ -85,11 +88,16 @@ public class UI extends JPanel implements ActionListener {
 		randomizeButton.addActionListener(this);
 		randomizeButton.setVisible(false);	
 
+		histogramCreator = new HistogramCreator();
 		
 	} // end UI
 
-	public void setState(UIState nextState) {
+	public static void setState(UIState nextState) {
 	    state = nextState;
+	}
+	
+	public static UIState getState() {
+	    return state;
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -112,10 +120,7 @@ public class UI extends JPanel implements ActionListener {
 		        scroll.setBounds(0, (int)(windowHeight * 0.281), windowWidth, (int)(windowHeight * 0.719));
 		        scroll.getVerticalScrollBar().setUnitIncrement(16);
 		        scroll.setBorder(null);
-				this.add(scroll);
-				break;
-			case STEGO_INFO: // Modals that allow user to learn more about algorithms
-				showStegoInfo(g2);
+				this.add(scroll);				
 				break;
 		}
 		
@@ -159,7 +164,7 @@ public class UI extends JPanel implements ActionListener {
 	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
 	    
 		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
-	    	    
+		
 	    if (showQR == true) {
 	   	
 			g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
@@ -195,13 +200,15 @@ public class UI extends JPanel implements ActionListener {
 		g2.setColor(new Color(200, 200, 200));
 		g2.fillRect(0, (int)(windowHeight * 0.28), windowWidth, 1);
 
+		
+
 	} // end showMainScreen
 	
 	
-	private void showStegoInfo(Graphics2D g2) {
-		g2.setColor(Color.gray);
-		g2.fillRect(0, 0, windowWidth, windowHeight);
-	}
+//	private void showStegoInfo(Graphics2D g2) {
+//		g2.setColor(Color.red);
+//		g2.fillRect(0, 0, 1000, 1000);
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -222,7 +229,7 @@ public class UI extends JPanel implements ActionListener {
 			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
-		}
+		}	
 		repaint();
 	}
 	
@@ -260,5 +267,6 @@ public class UI extends JPanel implements ActionListener {
 
 		return button;
 	} // end createButton	
+	
 	
 } //end UI class

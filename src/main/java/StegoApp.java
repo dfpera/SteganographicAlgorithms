@@ -6,7 +6,9 @@ import java.nio.file.Path;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.media.jai.Histogram;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
@@ -46,6 +48,9 @@ public class StegoApp extends JFrame {
 			File stegofile = new File("OUTPUT/stego.png");
 			ImageIO.write(testingStego.getStegoImage(), "png", stegofile);
 			
+			File coverfile = new File("OUTPUT/cover.png");
+			ImageIO.write(coverImage, "png", coverfile);
+			
 			oneBitStegoImage = oneBit.getStegoImage();
 			threeBitStegoImage = threeBit.getStegoImage();
 			fiveBitStegoImage = fiveBit.getStegoImage();
@@ -67,11 +72,13 @@ public class StegoApp extends JFrame {
             
 			// Decode QR code and output message
             String decodedText = Payload.decodeQRCode(qrCode);
-            if(decodedText == null) {
+            if (decodedText == null) {
                 System.out.println("No QR Code found in the image");
             } else {
                 System.out.println("Decoded text = " + decodedText);
             }
+
+            
         } catch (IOException e) {
             System.out.println("Could not generate QR Code or load image, IOException :: " + e.getMessage());
         }
@@ -89,7 +96,7 @@ public class StegoApp extends JFrame {
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-		
+			
 	}
 	
 	public static BufferedImage getNewImage() throws IOException {
@@ -98,5 +105,8 @@ public class StegoApp extends JFrame {
 		newImage = ImageIO.read(new File("assets/" + random + ".pgm"));
 		return newImage;	
 	}
+	
+
+
 	
 }
