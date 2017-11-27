@@ -220,7 +220,9 @@ public class EMD extends Steganography {
 		for (int i = 0; i < n; i++) {
 			// Get pixel
 			int colorChannel = this.getCoverImage().getRGB((position+i) % getCoverImage().getWidth(), (position+i) / getCoverImage().getWidth()) & 0xff;
-			
+			if ((position+i) % getStegoImage().getWidth() == 62 && (position+i) / getStegoImage().getWidth() == 261) {
+				System.out.println("Color Before: " + colorChannel);
+			}
 			// If pixel matches condition result increase or decrease
 			if (i == coverPixel) {
 				if (isIncrease) {
@@ -230,8 +232,14 @@ public class EMD extends Steganography {
 				}
 			}
 			
+			if ((position+i) % getStegoImage().getWidth() == 62 && (position+i) / getStegoImage().getWidth() == 261) {
+				System.out.println("Color After: " + colorChannel);
+			}
+			
 			// Set the pixel value to the stegoImage
-            this.getStegoImage().setRGB((position+i) % getCoverImage().getWidth(), (position+i) / getCoverImage().getWidth(), new Color(colorChannel, colorChannel, colorChannel).getRGB());
+			System.out.println("Column x: " + (position+i) % getStegoImage().getWidth());
+			System.out.println("Row y: " + (position+i) / getStegoImage().getWidth());
+            this.getStegoImage().setRGB((position+i) % getStegoImage().getWidth(), (position+i) / getStegoImage().getWidth(), new Color(colorChannel, colorChannel, colorChannel).getRGB());
 		}
 	}
 }

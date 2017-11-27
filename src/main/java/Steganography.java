@@ -41,18 +41,25 @@ public abstract class Steganography {
 	 * @return BufferedImage - the adjusted image
 	 */
 	private BufferedImage adjustCoverImage(BufferedImage image) {
+		BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {
+				// Get rgb value
 				int color = image.getRGB(x, y) & 0xff;
+
+				// If max value minus 1
 				if (color == 255) {
 					color--;
+				// If min value add 1
 				} else if (color == 0) {
 					color++;
 				}
-				image.setRGB(x, y, new Color(color, color, color).getRGB());
+				
+				// Set new rgb value
+				result.setRGB(x, y, new Color(color, color, color).getRGB());
 			}
 		}
-		return image;
+		return result;
 	}
 	
 	/*
