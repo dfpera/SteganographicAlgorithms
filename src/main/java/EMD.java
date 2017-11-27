@@ -42,7 +42,7 @@ public class EMD extends Steganography {
 		this.secretLength = digits.length();
 		
 		// Iterate through cover image
-		for (position = 0; position < (getCoverImage().getHeight() * getCoverImage().getWidth()); position += n) {
+		for (position = 0; position < (getCoverImage().getHeight() * getCoverImage().getWidth())-n; position += n) {
 			
 			// Step 2 calculate extraction function
 			int efNum = extractionFu(getCoverImage());
@@ -80,8 +80,7 @@ public class EMD extends Steganography {
 		
 		// Use binaryDigits to re-create BitMatrix
 		int messageSize = this.getPayload().getWidth() * this.getPayload().getHeight();
-		for (int i = 0; i < messageSize; i++) {
-			// TODO: accomodate for overflow
+		for (int i = 0; i < messageSize && i < binaryDigits.length(); i++) {
 			if (binaryDigits.charAt(i) == '1') {
 				extractedData.set(i % this.getPayload().getWidth(), i / this.getPayload().getWidth());
 			}
