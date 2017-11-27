@@ -28,15 +28,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 /**
- * The UI class implements the GUI, which enables the user to:
- * - Type their own secret message using the provided text box
- * - Embed their message as a QR code into the cover image using different algorithms
- * - Dynamically alter their message and view the resulting QR code and stego-images instantly
- * - (WIP) Randomize the cover image used to store the message
- * - (WIP) Enable the user to learn more about each algorithm and their 
- * 
- * @author ngmandyn
- *
+ * The ScrollPanel class implements the scrollable UI panel,
+ * which allows the user to view and compare the implementations of
+ * the Least Significant Bit, Exploiting Modification Direction, 
+ * and Optimal Pixel Adjustment Process algorithms. 
  */
 
 public class ScrollPanel extends JPanel implements ActionListener {
@@ -45,7 +40,6 @@ public class ScrollPanel extends JPanel implements ActionListener {
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private int windowWidth = (int)(screenSize.width * 0.8);
 	private int windowHeight = (int)(screenSize.height * 0.9);
-	private static UIState state;
 	
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
@@ -54,16 +48,9 @@ public class ScrollPanel extends JPanel implements ActionListener {
 	private BufferedImage qrCode;
 	
 	public ScrollPanel(JFrame frame) {
-		super();
-		
+		super();	
 		this.setLayout(null);
-		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
-		state = UIState.MAIN;						
-		
-	} // end UI
-
-	public void setState(UIState nextState) {
-	    state = nextState;
+		this.setPreferredSize(new Dimension(windowWidth, windowHeight));						
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -73,50 +60,54 @@ public class ScrollPanel extends JPanel implements ActionListener {
 	} // end paint
 	
 	private void showMainScreen(Graphics2D g2) {
-		g2.setColor(new Color(240, 240, 240));
+		g2.setColor(Color.white);
 		g2.fillRect(0, 0, windowWidth, windowWidth);
+		
+		GradientPaint background = new GradientPaint(0, 0, new Color(200, 200, 200, 0), 0, windowHeight, Color.white);
+		g2.setPaint(background);
+		g2.fillRect(0, 0, windowWidth, windowHeight);
 	    
 	    g2.setColor(new Color(200, 200, 200));	    
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.59), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.75), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8);
 	    
 	    if (UI.showQR == true) {
-			g2.drawImage(qrCode, (int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.59), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.75), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8, this);
+//			g2.drawImage(qrCode, (int)(windowWidth * 0.59), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8, this);
 	    }
 	    
 	    g2.setColor(new Color(150, 150, 150));
 		g2.setFont(labelFont);
-		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.21));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.43));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.615), (int)(windowHeight * 0.65));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.21));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.43));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.755), (int)(windowHeight * 0.65));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.21));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.43));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.65));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.21));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.43));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.65));
 	
 		g2.setFont(headingFont);
 		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.04));
-		g2.drawString("1-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.09));
-		g2.drawString("3-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.31));
-		g2.drawString("5-bit:", (int)(windowWidth * 0.535), (int)(windowHeight * 0.53));	
+		g2.drawString("1-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.100));
+		g2.drawString("3-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.325));
+		g2.drawString("5-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.540));	
 		
 		g2.setFont(bodyFont);
-		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit (LSB) \n"
-				              + "have high embedding capacities and easy implementation. Although, this \n"
-				              + "method comes with a price of higher perceptibility and image distortion, \n"
-				              + "which are undesired traits of any good steganography methods. The LSB \n"
-				              + "method embeds messages within the least significant bits of the cover image \n"
-				              + "and can use n of these bits to accomplish the embedding. The higher the \n"
-				              + "n, the higher the embedding capacity and the lower the output image quality.";
+		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit (LSB) have \n"
+				              + "high embedding capacities and easy implementation. Although, this method comes \n"
+				              + "with a price of higher perceptibility and image distortion, which are undesired traits \n"
+				              + "of any good steganography methods. The LSB method embeds messages within \n"
+				              + "the least significant bits of the cover image and can use n of these bits (\"n-bit(s)\")\n"
+				              + "to accomplish the embedding. The higher the n, the higher the embedding capacity\n"
+				              + "and the lower the output image quality.";
 	
 		String [] lines = lsbDescription.split("\n");
 		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;

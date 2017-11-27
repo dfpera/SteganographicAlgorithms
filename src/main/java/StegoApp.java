@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -20,8 +21,8 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
  */
 public class StegoApp extends JFrame {
 		
-	public static BufferedImage coverImage;
-	public static BufferedImage oneBitStegoImage, threeBitStegoImage, fiveBitStegoImage,
+	public static BufferedImage coverImage, qrCode,
+								oneBitStegoImage, threeBitStegoImage, fiveBitStegoImage,
 								qrCodeOneBit, qrCodeThreeBit, qrCodeFiveBit;
 
 	public static void main(String[] args) {
@@ -54,7 +55,7 @@ public class StegoApp extends JFrame {
 	        MatrixToImageWriter.writeToPath(testingStego.getPayload(), "PNG", path);
 			
 			// Extract QR code
-			BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(testingStego.extract());
+			qrCode = MatrixToImageWriter.toBufferedImage(oneBit.extract());
 			
 			qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
 			qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
@@ -89,11 +90,13 @@ public class StegoApp extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
-//		ScrollPanel scrollUI = new ScrollPanel(null);
-//		JScrollPane scroll = new JScrollPane(scrollUI);
-//        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-//        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        scroll.setBounds(0, 0, 300, 600);
-//		this.add(scroll);
 	}
+	
+	public static BufferedImage getNewImage() throws IOException {
+		BufferedImage newImage;
+		int random = new Random().nextInt(19) + 1;
+		newImage = ImageIO.read(new File("assets/" + random + ".pgm"));
+		return newImage;	
+	}
+	
 }
