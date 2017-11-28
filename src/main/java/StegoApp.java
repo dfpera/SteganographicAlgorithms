@@ -34,8 +34,13 @@ public class StegoApp extends JFrame {
            coverImage = ImageIO.read(new File("assets/18.pgm"));
         		
 	        // Create stego image
-	        EMD testingStego = new EMD(coverImage, 4, "Testing message bleep bloop", 35, 35);
+	        EMD testingStego = new EMD(coverImage, 3, "Testing message bleep bloop", 35, 35);
 			testingStego.embed();
+			LSB testingLSB = new LSB(coverImage, 4, "Testing message bleep bloop", 35, 35);
+			testingLSB.embed();
+			
+			System.out.println("EMD PSNR: " + Helper.psnr(testingStego.getCoverImage(), testingStego.getStegoImage()));
+			System.out.println("LSB PSNR: " + Helper.psnr(testingLSB.getCoverImage(), testingLSB.getStegoImage()));
 			
 			OPAP testOPAP = new OPAP(coverImage, 3, "Blah blah test", 512, 512);
 			testOPAP.embed();
@@ -69,7 +74,7 @@ public class StegoApp extends JFrame {
             System.out.println("Could not generate QR Code or load image, IOException :: " + e.getMessage());
         }
         
-		new StegoApp("StegoCompare");
+		//new StegoApp("StegoCompare");
 
     } // end main
 	
