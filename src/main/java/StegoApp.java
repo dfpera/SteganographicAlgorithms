@@ -36,14 +36,15 @@ public class StegoApp extends JFrame {
 	        // Create stego image
 	        EMD testingStego = new EMD(coverImage, 3, "Testing message bleep bloop", 35, 35);
 			testingStego.embed();
-			LSB testingLSB = new LSB(coverImage, 4, "Testing message bleep bloop", 35, 35);
+			LSB testingLSB = new LSB(coverImage, 3, "Testing message bleep bloop", 512, 512);
 			testingLSB.embed();
-			
-			System.out.println("EMD PSNR: " + Helper.psnr(testingStego.getCoverImage(), testingStego.getStegoImage()));
-			System.out.println("LSB PSNR: " + Helper.psnr(testingLSB.getCoverImage(), testingLSB.getStegoImage()));
 			
 			OPAP testOPAP = new OPAP(coverImage, 3, "Blah blah test", 512, 512);
 			testOPAP.embed();
+			
+			System.out.println("EMD PSNR: " + Helper.psnr(testingStego.getCoverImage(), testingStego.getStegoImage()));
+			System.out.println("LSB PSNR: " + Helper.psnr(testingLSB.getCoverImage(), testingLSB.getStegoImage()));
+			System.out.println("OPAP PSNR: " + Helper.psnr(testOPAP.getCoverImage(), testOPAP.getStegoImage()));
 			
 			// Save qrcode before image
 			Path path = FileSystems.getDefault().getPath("OUTPUT/qrCodeBefore.png");
