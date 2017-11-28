@@ -40,7 +40,7 @@ public class ScrollPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	private int windowWidth = (int)(screenSize.width * 0.8);
+	private int windowWidth = (int)(screenSize.width * 0.9);
 	private int windowHeight = (int)(screenSize.height * 2.0);
 	
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
@@ -66,76 +66,119 @@ public class ScrollPanel extends JPanel implements ActionListener {
 	
 	private void showAlgorithmList(Graphics2D g2) {
 		g2.setColor(new Color(255, 255, 255));
-		g2.fillRect(0, 0, windowWidth, windowWidth);
+		g2.fillRect(0, 0, windowWidth, windowHeight * 2);
 		
 		GradientPaint background = new GradientPaint(0, 0, new Color(200, 200, 200, 0), 0, windowHeight, Color.white);
 		g2.setPaint(background);
 		g2.fillRect(0, 0, windowWidth, windowHeight);
 	    
 	    g2.setColor(new Color(200, 200, 200));	    
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
 	    
 	    if (UI.showQR == true) {	
 	    		    	
-			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
 			
-			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneN, (int)(windowWidth * 0.80), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeTwoN, (int)(windowWidth * 0.80), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeNStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeN, (int)(windowWidth * 0.80), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeTwoN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.twoNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+
+			
+			g2.drawImage(StegoApp.oneBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+
 	    }
 	    
 	    g2.setColor(new Color(150, 150, 150));
 		g2.setFont(labelFont);
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.100));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.200));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.300));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.420));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.520));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.620));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.100));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.200));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.300));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.420));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.520));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.620));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.570), (int)(windowHeight * 0.006));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.200));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.300));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.420));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.520));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.620));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.740));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.840));
+//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.940));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.100));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.200));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.300));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.420));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.520));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.620));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.740));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.840));
+//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.940));
 	
 		g2.setFont(headingFont);
 		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.02));
-		g2.drawString("1-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.050));
-		g2.drawString("3-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.150));
-		g2.drawString("5-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.250));
-		g2.drawString("n = 1:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.370));
-		g2.drawString("n = 2:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.470));
-		g2.drawString("n = 3:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.570));
+		g2.drawString("1-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.052));
+		g2.drawString("3-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.152));
+		g2.drawString("5-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.252));
 		g2.drawString("Exploiting Modification Direction (EMD)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
+		g2.drawString("n = 1:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.372));
+		g2.drawString("n = 2:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.472));
+		g2.drawString("n = 3:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.572));
+		g2.drawString("Optimal Pixel Adjustment Process (OPAP)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.66));
+		g2.drawString("1-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.692));
+		g2.drawString("3-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.792));
+		g2.drawString("5-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.892));
 
 		g2.setFont(bodyFont);
-		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit (LSB) have \n"
-				              + "high embedding capacities and easy implementation. Although, this method comes \n"
-				              + "with a price of higher perceptibility and image distortion, which are undesired traits \n"
-				              + "of any good steganography methods. The LSB method embeds messages within \n"
-				              + "the least significant bits of the cover image and can use n of these bits (\"n-bit(s)\")\n"
-				              + "to accomplish the embedding. The higher the n, the higher the embedding capacity\n"
-				              + "and the lower the output image quality.";
+		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit \n"
+				              + "(LSB) have high embedding capacities and easy implementation. Although, \n"
+				              + "this method comes with a price of higher perceptibility and image distortion, \n"
+				              + "which are undesired traits of any good steganography methods. The LSB \n"
+				              + "method embeds messages within the least significant bits of the cover image \n"
+				              + "and can use n of these bits (\"n-bit(s)\") to accomplish the embedding. The higher \n"
+				              + "the n, the higher the embedding capacity and the lower the output image quality.";
 	
 		String [] lines = lsbDescription.split("\n");
 		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
@@ -146,9 +189,10 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		    g2.drawString(line, x, y);
 		}
         
-		//underline
+		// underlines
 		g2.setColor(new Color(200, 200, 200));
-		g2.fillRect(0, (int)(windowHeight * 0.32), windowWidth, 1);
+		g2.fillRect(0, (int)(windowHeight * 0.320), windowWidth, 1);
+		g2.fillRect(0, (int)(windowHeight * 0.64), windowWidth, 1);
 		
 	} // end showMainScreen
 

@@ -43,7 +43,7 @@ public class UI extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	private int windowWidth = (int)(screenSize.width * 0.8);
+	private int windowWidth = (int)(screenSize.width * 0.9);
 	private int windowHeight = (int)(screenSize.height * 0.9);
 	private static UIState state;
 	
@@ -84,7 +84,7 @@ public class UI extends JPanel implements ActionListener {
 		embedButton.addActionListener(this);
 		embedButton.setVisible(false);	
 		
-		randomizeButton = createButton("Randomize Image", (int)(windowWidth * 0.495), (int)(windowHeight * 0.09), windowWidth / 8, windowHeight / 12);
+		randomizeButton = createButton("Randomize Image", (int)(windowWidth * 0.54), (int)(windowHeight * 0.09), windowWidth / 8, windowHeight / 12);
 		randomizeButton.addActionListener(this);
 		randomizeButton.setVisible(false);	
 
@@ -117,7 +117,7 @@ public class UI extends JPanel implements ActionListener {
 				scroll = new JScrollPane(scrollUI);
 		        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		        scroll.setBounds(0, (int)(windowHeight * 0.281), windowWidth, (int)(windowHeight * 0.719));
+		        scroll.setBounds(0, (int)(windowHeight * 0.302), windowWidth, (int)(windowHeight * 0.719));
 		        scroll.getVerticalScrollBar().setUnitIncrement(16);
 		        scroll.setBorder(null);
 				this.add(scroll);				
@@ -153,37 +153,40 @@ public class UI extends JPanel implements ActionListener {
 		textBox.setVisible(true);
 		inputLabel.setVisible(true);
 		
-		g2.setColor(new Color(230, 230, 230));
+		g2.setColor(new Color(240, 240, 240));
 		g2.fillRect(0, 0, windowWidth, windowWidth);
 		
-		GradientPaint background = new GradientPaint(0, (int)(windowHeight * 0.22), new Color(230, 230, 230, 255), 0, (int)(windowHeight * 0.28), Color.white);
+		GradientPaint background = new GradientPaint(0, (int)(windowHeight * 0.18), new Color(240, 240, 240, 255), 0, (int)(windowHeight * 0.28), Color.white);
 		g2.setPaint(background);
-		g2.fillRect(0, (int)(windowHeight * 0.22), windowWidth, (int)(windowHeight * 0.28));
+		g2.fillRect(0, (int)(windowHeight * 0.18), windowWidth, (int)(windowHeight * 0.28));
 		
 	    g2.setColor(new Color(200, 200, 200)); // draw underline
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8);
 	    
-		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.82), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
 		
 	    if (showQR == true) {	
 			LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 512, 512);
 			oneBit.embed();			
-			g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.82), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
 	    	StegoApp.qrCode = MatrixToImageWriter.toBufferedImage(oneBit.getPayload());
-			g2.drawImage(StegoApp.qrCode, (int)(windowWidth * 0.64), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCode, (int)(windowWidth * 0.68), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
 	    }
 	    	    
 	    g2.setColor(new Color(150, 150, 150));
 		g2.setFont(headingFont);
-		g2.drawString("Algorithms", (int)(windowWidth * 0.05), (int)(windowHeight * 0.26));
+		g2.drawString("Algorithms", (int)(windowWidth * 0.05), (int)(windowHeight * 0.29));
 	    
 		g2.setFont(labelFont);
-		g2.drawString("QR code", (int)(windowWidth * 0.68), (int)(windowHeight * 0.24));
-		g2.drawString("Cover image", (int)(windowWidth * 0.825), (int)(windowHeight * 0.24));
+		g2.drawString("QR code", (int)(windowWidth * 0.72), (int)(windowHeight * 0.03));
+		g2.drawString("Cover image", (int)(windowWidth * 0.85), (int)(windowHeight * 0.03));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.57), (int)(windowHeight * 0.29));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.69), (int)(windowHeight * 0.29));
+		g2.drawString("Difference(cover-stego)", (int)(windowWidth * 0.815), (int)(windowHeight * 0.29));
 		
 		//underline
 		g2.setColor(new Color(200, 200, 200));
-		g2.fillRect(0, (int)(windowHeight * 0.28), windowWidth, 1);
+		g2.fillRect(0, (int)(windowHeight * 0.3), windowWidth, 1);
 
 
 	} // end showMainScreen
@@ -217,39 +220,63 @@ public class UI extends JPanel implements ActionListener {
 	private void updateImages() {  
 		
 		// Display a histogram (currently shows up in wrong place for testing purposes)
-//		Histogram histogramGrayscale = histogramCreator.createHistogram(StegoApp.coverImage);
-//	    this.addHistogram(StegoApp.coverImage, histogramGrayscale, 0, 0, 240, 150);
+		Histogram histogramGrayscale = histogramCreator.createHistogram(StegoApp.coverImage);
+	    this.addHistogram(StegoApp.coverImage, histogramGrayscale, 0, 0, 240, 150);
 		
 		LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 512, 512);
 		oneBit.embed();
 		StegoApp.oneBitStegoImage = oneBit.getStegoImage();
 		StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
+		StegoApp.oneBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.oneBitStegoImage);
 
 		LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 512, 512);
 		threeBit.embed();
 		StegoApp.threeBitStegoImage = threeBit.getStegoImage();
 		StegoApp.qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
+		StegoApp.threeBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeBitStegoImage);
 		
 		LSB fiveBit = new LSB(StegoApp.coverImage, 5, secretMessage, 512, 512);
 		fiveBit.embed();
 		StegoApp.fiveBitStegoImage = fiveBit.getStegoImage();
 		StegoApp.qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
+		StegoApp.fiveBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.fiveBitStegoImage);
 		
 		EMD oneN = new EMD(StegoApp.coverImage, 1, secretMessage, 35, 35);
 		oneN.embed();
 		StegoApp.oneNStegoImage = oneN.getStegoImage();
 		StegoApp.qrCodeOneN = MatrixToImageWriter.toBufferedImage(oneN.extract());
+		StegoApp.oneNDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.oneNStegoImage);
 		
 		EMD twoN = new EMD(StegoApp.coverImage, 2, secretMessage, 35, 35);
 		twoN.embed();
 		StegoApp.twoNStegoImage = twoN.getStegoImage();
 		StegoApp.qrCodeTwoN = MatrixToImageWriter.toBufferedImage(twoN.extract());
+		StegoApp.twoNDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.twoNStegoImage);
 		
 		EMD threeN = new EMD(StegoApp.coverImage, 3, secretMessage, 35, 35);
 		threeN.embed();
 		StegoApp.threeNStegoImage = threeN.getStegoImage();
 		StegoApp.qrCodeThreeN = MatrixToImageWriter.toBufferedImage(threeN.extract());
+		StegoApp.threeNDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeNStegoImage);
 		
+		OPAP oneBitOPAP = new OPAP(StegoApp.coverImage, 1, secretMessage, 512, 512);
+		oneBitOPAP.embed();
+		StegoApp.oneBitOPAPStegoImage = oneBitOPAP.getStegoImage();
+		StegoApp.qrCodeOneBitOPAP = MatrixToImageWriter.toBufferedImage(oneBitOPAP.extract());
+		StegoApp.oneBitOPAPDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.oneBitOPAPStegoImage);
+
+		OPAP threeBitOPAP = new OPAP(StegoApp.coverImage, 3, secretMessage, 512, 512);
+		threeBitOPAP.embed();
+		StegoApp.threeBitOPAPStegoImage = threeBitOPAP.getStegoImage();
+		StegoApp.qrCodeThreeBitOPAP = MatrixToImageWriter.toBufferedImage(threeBitOPAP.extract());
+		StegoApp.threeBitOPAPDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeBitOPAPStegoImage);
+		
+		OPAP fiveBitOPAP = new OPAP(StegoApp.coverImage, 5, secretMessage, 512, 512);
+		fiveBitOPAP.embed();
+		StegoApp.fiveBitOPAPStegoImage = fiveBitOPAP.getStegoImage();
+		StegoApp.qrCodeFiveBitOPAP = MatrixToImageWriter.toBufferedImage(fiveBitOPAP.extract());
+		StegoApp.fiveBitOPAPDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.fiveBitOPAPStegoImage);
+
 	}
 	
 	/* 
