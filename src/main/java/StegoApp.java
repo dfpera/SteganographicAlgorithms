@@ -37,11 +37,14 @@ public class StegoApp extends JFrame {
 	        EMD testingStego = new EMD(coverImage, 4, "Testing message bleep bloop", 35, 35);
 			testingStego.embed();
 			
+			OPAP testOPAP = new OPAP(coverImage, 3, "Blah blah test", 512, 512);
+			testOPAP.embed();
+			
 			// Save qrcode before image
 			Path path = FileSystems.getDefault().getPath("OUTPUT/qrCodeBefore.png");
-	        MatrixToImageWriter.writeToPath(testingStego.getPayload(), "PNG", path);
-	        
-	        qrCode = MatrixToImageWriter.toBufferedImage(testingStego.extract());
+	        MatrixToImageWriter.writeToPath(testOPAP.getPayload(), "PNG", path);
+	        	        
+	        qrCode = MatrixToImageWriter.toBufferedImage(testOPAP.extract());
 			
 			// Save QR code after
 			File qrfileafter = new File("OUTPUT/qrCodeAfter.png");
