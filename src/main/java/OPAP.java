@@ -62,17 +62,17 @@ public class OPAP extends Steganography {
 							
 				// Case 1: If error is within (-2)^k and 2^k, where k = bit depth of LSB, 
 		        //         and stego-pixel is >= 2^k, then reduce the error
-				if (error > Math.pow(-2, bitDepth) && error < Math.pow(2, bitDepth) && stegoChannel >= Math.pow(2, bitDepth)) {	
+				if (error > Math.pow(2, bitDepth-1) && error < Math.pow(2, bitDepth) && stegoChannel >= Math.pow(2, bitDepth)) {	
 					stegoChannel = (int)(stegoChannel - Math.pow(2, bitDepth));
 				} else {
 					stegoChannel = stegoChannel;
-				}
+				} 
 				
 				// Case 2: If error is within (-2)^(k-1) and 2^(k-1),
 				//	       leave the stego-pixel as is
 				if (error >= Math.pow(-2, bitDepth-1) && error <= Math.pow(2, bitDepth-1)) {
 					stegoChannel = stegoChannel;
-				}
+				} 
 				
 				// Case 3: If error is within (-2)^k and (-2)^(k-1), 
 				// 		   and stego-pixel is less than 256 - 2^k
