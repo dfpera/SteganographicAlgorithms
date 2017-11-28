@@ -7,6 +7,7 @@ public class EMD extends Steganography {
 	private int n; // Used to calculate the (2n + 1)-ary digit
 	private int position; // Used to determine the position in the cover image when embedding or extracting
 	private int secretLength;
+	private int numBits; // the number of bits that will be used per base-(2n+1)
 
 	public EMD(BufferedImage coverImage, int n, String message, int payloadWidth, int payloadHeight) {
 		super(coverImage, message, payloadWidth, payloadHeight);
@@ -17,6 +18,16 @@ public class EMD extends Steganography {
 		} else {
 			this.n = n;
 		}
+		
+		/*
+		 * Determine largest number of bits that can be stores into 
+		 * a single digit with base-(2n+1)
+		 */
+		numBits = 0;
+		while (Math.pow(2, numBits) < (2*this.n+1)) {
+			numBits++;
+		}
+		numBits--;
 		
 		this.position = 0;
 	}
@@ -31,13 +42,13 @@ public class EMD extends Steganography {
 		this.secretLength = digits.length();
 		
 		// Iterate through cover image
-		for (position = 0; position < (getCoverImage().getHeight() * getCoverImage().getWidth()); position += n) {
+		for (position = 0; position < (getCoverImage().getHeight() * getCoverImage().getWidth())-n; position += n) {
 			
 			// Step 2 calculate extraction function
-			int efNum = extractionFu();
+			int efNum = extractionFu(getCoverImage());
 			
 			// Step 3 shift bit according to result from extraction function
-			embedDigit(digits, digitPosition);
+			embedDigit(digits, digitPosition, efNum);
 			digitPosition++;
 			
 			// Reset digit position if all digits have been embedded
@@ -59,7 +70,7 @@ public class EMD extends Steganography {
 		// Iterate through stego image to extract image
 		for (position = 0; position < (getStegoImage().getHeight() * getStegoImage().getWidth()); position += n) {
 			// Extract secret digit
-			binaryDigits += base10ToBinary(extractionFu());
+			binaryDigits += base10ToBinary(extractionFu(getStegoImage()));
 			digitPosition++;
 			
 			if (digitPosition >= this.secretLength) {
@@ -68,7 +79,8 @@ public class EMD extends Steganography {
 		}
 		
 		// Use binaryDigits to re-create BitMatrix
-		for (int i = 0; i < (this.getPayload().getWidth() * this.getPayload().getHeight()); i++) {
+		int messageSize = this.getPayload().getWidth() * this.getPayload().getHeight();
+		for (int i = 0; i < messageSize && i < binaryDigits.length(); i++) {
 			if (binaryDigits.charAt(i) == '1') {
 				extractedData.set(i % this.getPayload().getWidth(), i / this.getPayload().getWidth());
 			}
@@ -85,14 +97,33 @@ public class EMD extends Steganography {
 	 * @return String - (2n+1)-ary string representation of a number.
 	 */
 	private String bitMatrixToBase2NPlus1() {
-		String binaryNum = "";
 		BitMatrix payload = getPayload();
+		String binaryNum = "";
+		String curBits;
+		String resultNum = "";
+		
+		// Get binary string
 		for (int y = 0; y < payload.getHeight(); y++) {
 			for (int x = 0; x < payload.getWidth(); x++) {
 				binaryNum += payload.get(x, y) ? "1" : "0";
 			}
 		}
-		return Integer.toString(Integer.parseInt(binaryNum, 2), 2*n+1);
+		
+		// Convert binary string, one digit at a time
+		// Get a subset of numBits bits from binaryNum
+		for (int i = 0; i < binaryNum.length(); i += numBits) {
+			curBits = "";
+			for (int j = i; j < i + numBits; j++) {
+				if (j < binaryNum.length()) {
+					curBits += binaryNum.charAt(j);
+				} 
+			}
+			
+			// convert to number to base-(2n+1) and append to result
+			resultNum += Integer.toString(Integer.parseInt(curBits, 2), 2*n+1);
+		}
+		
+		return resultNum;
 	}
 	
 	/*
@@ -102,7 +133,14 @@ public class EMD extends Steganography {
 	 * @return String - 
 	 */
 	private String base10ToBinary(int digit) {
-		return Integer.toString(digit, 2);
+		String binary = Integer.toString(digit, 2);
+		
+		// Add padding 0's to accomodate lost bits
+		if (binary.length() < numBits) {
+			binary = "0" + binary;
+		}
+		
+		return binary;
 	}
 	
 	/*
@@ -114,17 +152,17 @@ public class EMD extends Steganography {
 	 * 
 	 * @return int - SUM(i=1 to n, p_i * i) mod (2n+1)
 	 */
-	private int extractionFu() {
+	private int extractionFu(BufferedImage image) {
 		// Initialize sum
 		int sum = 0;
 		
 		// Calculate sum
 		for (int i = 0; i < n; i++) {
 			// Get color pixel
-			int colorChannel = this.getCoverImage().getRGB((position+i) % getCoverImage().getWidth(), (position+i) / getCoverImage().getWidth()) & 0xff;
+			int colorChannel = image.getRGB((position+i) % image.getWidth(), (position+i) / image.getWidth()) & 0xff;
 			
 			// Add to the sum
-			sum += colorChannel * (n+1);
+			sum += colorChannel * (i+1);
 		}
 		
 		// Return the sum modulus (2n+1)
@@ -151,33 +189,39 @@ public class EMD extends Steganography {
 	 * 
 	 * @param int - the position of the digit that needs to be embedded
 	 */
-	private void embedDigit(String secretDigits, int digitPosition) {
+	private void embedDigit(String secretDigits, int digitPosition, int extractionFuResult) {
 		// Calculate r
-		int r = (Integer.parseInt(Character.toString(secretDigits.charAt(digitPosition)), 2*n+1));
+		int r = (((Integer.parseInt(Character.toString(secretDigits.charAt(digitPosition)), 2*n+1)) - extractionFuResult) % (2*n+1));
+		if (r < 0) {
+			r += (2*n+1);
+		}
+		//System.out.println("R: " + r);
 		
 		// Compare r to condition
 		int condition = (2*n + 1) / 2;
 		boolean isIncrease = false;
-		int coverPixel;
+		int coverPixel = -1;
 		
+		// If 0 do nothing
+		if (r == 0) {
+			// Do nothing
 		// If smaller increase pixel r
-		if (r < condition) {
+		} else if (r <= condition) {
 			isIncrease = true;
 			coverPixel = r - 1;
 		// If bigger decrease pixel (2n+1)-r
 		} else if (r > condition) {
 			isIncrease = false;
 			coverPixel = (2*n+1) - r - 1;
-		// If 0 do nothing 
-		} else {
-			coverPixel = -1;
-		}
+		} 
 			
 		// Transfer pixels and modify pixel that requires modifying
 		for (int i = 0; i < n; i++) {
 			// Get pixel
 			int colorChannel = this.getCoverImage().getRGB((position+i) % getCoverImage().getWidth(), (position+i) / getCoverImage().getWidth()) & 0xff;
-			
+			if ((position+i) % getStegoImage().getWidth() == 62 && (position+i) / getStegoImage().getWidth() == 261) {
+				System.out.println("Color Before: " + colorChannel);
+			}
 			// If pixel matches condition result increase or decrease
 			if (i == coverPixel) {
 				if (isIncrease) {
@@ -187,8 +231,14 @@ public class EMD extends Steganography {
 				}
 			}
 			
+			if ((position+i) % getStegoImage().getWidth() == 62 && (position+i) / getStegoImage().getWidth() == 261) {
+				System.out.println("Color After: " + colorChannel);
+			}
+			
 			// Set the pixel value to the stegoImage
-            this.getStegoImage().setRGB((position+i) % getCoverImage().getWidth(), (position+i) / getCoverImage().getWidth(), new Color(colorChannel, colorChannel, colorChannel).getRGB());
+			System.out.println("Column x: " + (position+i) % getStegoImage().getWidth());
+			System.out.println("Row y: " + (position+i) / getStegoImage().getWidth());
+            this.getStegoImage().setRGB((position+i) % getStegoImage().getWidth(), (position+i) / getStegoImage().getWidth(), new Color(colorChannel, colorChannel, colorChannel).getRGB());
 		}
 	}
 }

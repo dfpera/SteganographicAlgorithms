@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -15,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.Histogram;
@@ -41,12 +41,11 @@ public class ScrollPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private int windowWidth = (int)(screenSize.width * 0.8);
-	private int windowHeight = (int)(screenSize.height * 0.9);
+	private int windowHeight = (int)(screenSize.height * 2.0);
 	
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
-	private JButton learnButton;
 	public static boolean showModal;
     HistogramCreator histogramCreator;
 	
@@ -55,18 +54,12 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		
-		learnButton = createButton("Learn More",(int)(windowWidth * 0.05), (int)(windowHeight * 0.28), windowWidth / 8, windowHeight / 12);
-		add(learnButton);
-		learnButton.addActionListener(this);
-		learnButton.setVisible(true);
-		
         histogramCreator = new HistogramCreator();
 	}
 	
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 		showAlgorithmList(g2);		
 		
 	} // end paint
@@ -75,46 +68,66 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		g2.setColor(new Color(255, 255, 255));
 		g2.fillRect(0, 0, windowWidth, windowWidth);
 		
-		learnButton.setVisible(true);
-		
 		GradientPaint background = new GradientPaint(0, 0, new Color(200, 200, 200, 0), 0, windowHeight, Color.white);
 		g2.setPaint(background);
 		g2.fillRect(0, 0, windowWidth, windowHeight);
 	    
 	    g2.setColor(new Color(200, 200, 200));	    
 	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.64), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
 	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+	    g2.fillRect((int)(windowWidth * 0.80), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
 	    
-	    if (UI.showQR == true) {
+	    if (UI.showQR == true) {	
+	    		    	
 			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
 			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.23), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.45), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.80), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
+			
+			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneN, (int)(windowWidth * 0.80), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeTwoN, (int)(windowWidth * 0.80), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeNStegoImage, (int)(windowWidth * 0.64), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeN, (int)(windowWidth * 0.80), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
 	    }
 	    
 	    g2.setColor(new Color(150, 150, 150));
 		g2.setFont(labelFont);
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.21));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.43));
-		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.65));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.21));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.43));
-		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.65));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.100));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.200));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.300));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.420));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.520));
+		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.620));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.100));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.200));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.300));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.420));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.520));
+		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.620));
 	
 		g2.setFont(headingFont);
-		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.04));
-		g2.drawString("1-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.100));
-		g2.drawString("3-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.325));
-		g2.drawString("5-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.540));
-		g2.drawString("Exploiting Modification Direction (EMD)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.70));
+		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.02));
+		g2.drawString("1-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.050));
+		g2.drawString("3-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.150));
+		g2.drawString("5-bit:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.250));
+		g2.drawString("n = 1:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.370));
+		g2.drawString("n = 2:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.470));
+		g2.drawString("n = 3:", (int)(windowWidth * 0.57), (int)(windowHeight * 0.570));
+		g2.drawString("Exploiting Modification Direction (EMD)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
 
-		
 		g2.setFont(bodyFont);
 		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit (LSB) have \n"
 				              + "high embedding capacities and easy implementation. Although, this method comes \n"
@@ -128,32 +141,20 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
 		for (int lineCount = 0; lineCount < lines.length; lineCount++) {
 		    int x = (int)(windowWidth * 0.05);
-		    int y = (int)(windowHeight * 0.08) + lineCount * lineHeight;
+		    int y = (int)(windowHeight * 0.04) + lineCount * lineHeight;
 		    String line = lines[lineCount];
 		    g2.drawString(line, x, y);
 		}
-
-		
-        Histogram histogramLSB = histogramCreator.createHistogram(StegoApp.coverImage);
-        addHistogram(StegoApp.coverImage, histogramLSB, 50, 250, 250, 200);
         
 		//underline
 		g2.setColor(new Color(200, 200, 200));
-		g2.fillRect(0, (int)(windowHeight * 0.665), windowWidth, 1);
+		g2.fillRect(0, (int)(windowHeight * 0.32), windowWidth, 1);
 		
 	} // end showMainScreen
-	
-	private void showStegoInfo(Graphics2D g2) {
-		learnButton.setVisible(false);
-	}
-	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand() == "Learn More") {
 
-		}								
-		repaint();
 	}
 	
 	/* 
@@ -191,23 +192,25 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		return button;
 	} // end createButton	
 	
-    public void repaint() {
-        this.setVisible(true);
-    }
 	
-    public void addHistogram(BufferedImage image, Histogram histogram, int x, int y, int w, int h) {
-    	addHistogram(image, histogram, true, true, true, x, y, w, h);
-    }
+	
+//    public void repaint() {
+//        this.setVisible(true);
+//    }
+//	
+//    public void addHistogram(BufferedImage image, Histogram histogram, int x, int y, int w, int h) {
+//    	addHistogram(image, histogram, true, true, true, x, y, w, h);
+//    }
+//    
+//    public void addHistogram(BufferedImage image, Histogram histogram, 
+//    		                 boolean plotRed, boolean plotGreen, boolean plotBlue,
+//    		                 int x, int y, int w, int h) {
+//    	HistogramPanel hp = new HistogramPanel(histogram.getBins(), plotRed, plotGreen, plotBlue);
+//    	hp.setBounds(x, y, w, h);
+//    	this.add(hp); 	
+//    }
     
-    public void addHistogram(BufferedImage image, Histogram histogram, 
-    		                 boolean plotRed, boolean plotGreen, boolean plotBlue,
-    		                 int x, int y, int w, int h) {
-    	HistogramPanel hp = new HistogramPanel(histogram.getBins(), plotRed, plotGreen, plotBlue);
-    	hp.setBounds(x, y, w, h);
-    	this.add(hp);
-    	
-    }
     
 
 	
-} //end UI class
+} //end ScrollPanel class

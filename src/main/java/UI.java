@@ -55,10 +55,10 @@ public class UI extends JPanel implements ActionListener {
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	public static boolean showQR, showModal;
 	public static String secretMessage = "Enter your secret message";
+	ScrollPanel scrollUI;
+	JScrollPane scroll;
+    HistogramCreator histogramCreator;
 
-	Histogram histogramGrayscale;
-	HistogramCreator histogramCreator;
-	
 	
 	public UI(JFrame frame) {
 		super();
@@ -88,7 +88,7 @@ public class UI extends JPanel implements ActionListener {
 		randomizeButton.addActionListener(this);
 		randomizeButton.setVisible(false);	
 
-		histogramCreator = new HistogramCreator();
+        histogramCreator = new HistogramCreator();
 		
 	} // end UI
 
@@ -113,8 +113,8 @@ public class UI extends JPanel implements ActionListener {
 				showMainScreen(g2);
 				add(embedButton);
 				add(randomizeButton);
-				ScrollPanel scrollUI = new ScrollPanel(null);
-				JScrollPane scroll = new JScrollPane(scrollUI);
+				scrollUI = new ScrollPanel(null);
+				scroll = new JScrollPane(scrollUI);
 		        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		        scroll.setBounds(0, (int)(windowHeight * 0.281), windowWidth, (int)(windowHeight * 0.719));
@@ -165,27 +165,12 @@ public class UI extends JPanel implements ActionListener {
 	    
 		g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
 		
-	    if (showQR == true) {
-	   	
-			g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
-	    	
+	    if (showQR == true) {	
 			LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 512, 512);
-			oneBit.embed();
-			StegoApp.oneBitStegoImage = oneBit.getStegoImage();
-			StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
-			
+			oneBit.embed();			
+			g2.drawImage(StegoApp.coverImage, (int)(windowWidth * 0.80), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
 	    	StegoApp.qrCode = MatrixToImageWriter.toBufferedImage(oneBit.getPayload());
 			g2.drawImage(StegoApp.qrCode, (int)(windowWidth * 0.64), (int)(windowHeight * 0.04), windowWidth / 8, windowWidth / 8, this);
-
-			LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 512, 512);
-			threeBit.embed();
-			StegoApp.threeBitStegoImage = threeBit.getStegoImage();
-			StegoApp.qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
-			
-			LSB fiveBit = new LSB(StegoApp.coverImage, 5, secretMessage, 512, 512);
-			fiveBit.embed();
-			StegoApp.fiveBitStegoImage = fiveBit.getStegoImage();
-			StegoApp.qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
 	    }
 	    	    
 	    g2.setColor(new Color(150, 150, 150));
@@ -200,15 +185,9 @@ public class UI extends JPanel implements ActionListener {
 		g2.setColor(new Color(200, 200, 200));
 		g2.fillRect(0, (int)(windowHeight * 0.28), windowWidth, 1);
 
-		
 
 	} // end showMainScreen
 	
-	
-//	private void showStegoInfo(Graphics2D g2) {
-//		g2.setColor(Color.red);
-//		g2.fillRect(0, 0, 1000, 1000);
-//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -219,6 +198,7 @@ public class UI extends JPanel implements ActionListener {
 			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
+			updateImages();
 		}	
 		if (e.getActionCommand() == "Randomize Image") {
 			try {
@@ -229,8 +209,47 @@ public class UI extends JPanel implements ActionListener {
 			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
+			updateImages();
 		}	
 		repaint();
+	}
+	
+	private void updateImages() {  
+		
+		// Display a histogram (currently shows up in wrong place for testing purposes)
+//		Histogram histogramGrayscale = histogramCreator.createHistogram(StegoApp.coverImage);
+//	    this.addHistogram(StegoApp.coverImage, histogramGrayscale, 0, 0, 240, 150);
+		
+		LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 512, 512);
+		oneBit.embed();
+		StegoApp.oneBitStegoImage = oneBit.getStegoImage();
+		StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
+
+		LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 512, 512);
+		threeBit.embed();
+		StegoApp.threeBitStegoImage = threeBit.getStegoImage();
+		StegoApp.qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
+		
+		LSB fiveBit = new LSB(StegoApp.coverImage, 5, secretMessage, 512, 512);
+		fiveBit.embed();
+		StegoApp.fiveBitStegoImage = fiveBit.getStegoImage();
+		StegoApp.qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
+		
+		EMD oneN = new EMD(StegoApp.coverImage, 1, secretMessage, 35, 35);
+		oneN.embed();
+		StegoApp.oneNStegoImage = oneN.getStegoImage();
+		StegoApp.qrCodeOneN = MatrixToImageWriter.toBufferedImage(oneN.extract());
+		
+		EMD twoN = new EMD(StegoApp.coverImage, 2, secretMessage, 35, 35);
+		twoN.embed();
+		StegoApp.twoNStegoImage = twoN.getStegoImage();
+		StegoApp.qrCodeTwoN = MatrixToImageWriter.toBufferedImage(twoN.extract());
+		
+		EMD threeN = new EMD(StegoApp.coverImage, 3, secretMessage, 35, 35);
+		threeN.embed();
+		StegoApp.threeNStegoImage = threeN.getStegoImage();
+		StegoApp.qrCodeThreeN = MatrixToImageWriter.toBufferedImage(threeN.extract());
+		
 	}
 	
 	/* 
@@ -267,6 +286,19 @@ public class UI extends JPanel implements ActionListener {
 
 		return button;
 	} // end createButton	
-	
+    
+    public void addHistogram(BufferedImage image, Histogram histogram, int x, int y, int w, int h) {
+    	addHistogram(image, histogram, true, true, true, x, y, w, h);
+    }
+    
+    public void addHistogram(BufferedImage image, Histogram histogram, 
+    		                 boolean plotRed, boolean plotGreen, boolean plotBlue,
+    		                 int x, int y, int w, int h) {
+    	HistogramPanel hp = new HistogramPanel(histogram.getBins(), plotRed, plotGreen, plotBlue);
+    	hp.setBounds(x, y, w, h);
+    	this.add(hp);
+    	hp.repaint();
+    	
+    }
 	
 } //end UI class

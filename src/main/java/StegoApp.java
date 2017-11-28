@@ -25,24 +25,35 @@ public class StegoApp extends JFrame {
 		
 	public static BufferedImage coverImage, qrCode,
 								oneBitStegoImage, threeBitStegoImage, fiveBitStegoImage,
-								qrCodeOneBit, qrCodeThreeBit, qrCodeFiveBit;
+								qrCodeOneBit, qrCodeThreeBit, qrCodeFiveBit,
+								oneNStegoImage, twoNStegoImage, threeNStegoImage,
+								qrCodeOneN, qrCodeTwoN, qrCodeThreeN;
 
 	public static void main(String[] args) {
         try {
-            // Payload.generateQRCodeImage("This is my first QR Code", 350, 350, Payload.QR_CODE_IMAGE_PATH);
-        	coverImage = ImageIO.read(new File("assets/18.pgm"));
-        	// Create stego image
-        	LSB testingStego = new LSB(coverImage, 1, "Testing message", 250, 250);
+           coverImage = ImageIO.read(new File("assets/18.pgm"));
+        		
+	        // Create stego image
+	        EMD testingStego = new EMD(coverImage, 4, "Testing message bleep bloop", 35, 35);
 			testingStego.embed();
 			
-			LSB oneBit = new LSB(coverImage, 1, UI.secretMessage, 512, 512);
-			oneBit.embed();
+			// Save qrcode before image
+			Path path = FileSystems.getDefault().getPath("OUTPUT/qrCodeBefore.png");
+	        MatrixToImageWriter.writeToPath(testingStego.getPayload(), "PNG", path);
+	        
+	        qrCode = MatrixToImageWriter.toBufferedImage(testingStego.extract());
 			
-			LSB threeBit = new LSB(coverImage, 3, UI.secretMessage, 512, 512);
-			threeBit.embed();
-			
-			LSB fiveBit = new LSB(coverImage, 5, UI.secretMessage, 512, 512);
-			fiveBit.embed();
+			// Save QR code after
+			File qrfileafter = new File("OUTPUT/qrCodeAfter.png");
+			ImageIO.write(qrCode, "png", qrfileafter);
+            
+			// Decode QR code and output message
+            String decodedText = Payload.decodeQRCode(qrCode);
+            if(decodedText == null) {
+                System.out.println("No QR Code found in the image");
+            } else {
+                System.out.println("Decoded text = " + decodedText);
+            }
 			
 			// Save stego image
 			File stegofile = new File("OUTPUT/stego.png");
@@ -51,34 +62,6 @@ public class StegoApp extends JFrame {
 			File coverfile = new File("OUTPUT/cover.png");
 			ImageIO.write(coverImage, "png", coverfile);
 			
-			oneBitStegoImage = oneBit.getStegoImage();
-			threeBitStegoImage = threeBit.getStegoImage();
-			fiveBitStegoImage = fiveBit.getStegoImage();
-			
-			// Save qrcode before image
-			Path path = FileSystems.getDefault().getPath("OUTPUT/qrCodeBefore.png");
-	        MatrixToImageWriter.writeToPath(testingStego.getPayload(), "PNG", path);
-			
-			// Extract QR code
-			qrCode = MatrixToImageWriter.toBufferedImage(oneBit.extract());
-			
-			qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
-			qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
-			qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
-			
-			// Save QR code after
-			File qrfileafter = new File("OUTPUT/qrCodeAfter.png");
-			ImageIO.write(qrCode, "png", qrfileafter);
-            
-			// Decode QR code and output message
-            String decodedText = Payload.decodeQRCode(qrCode);
-            if (decodedText == null) {
-                System.out.println("No QR Code found in the image");
-            } else {
-                System.out.println("Decoded text = " + decodedText);
-            }
-
-            
         } catch (IOException e) {
             System.out.println("Could not generate QR Code or load image, IOException :: " + e.getMessage());
         }
@@ -95,8 +78,7 @@ public class StegoApp extends JFrame {
 		this.add(mainPanel);
 		this.pack();
 		this.setLocationRelativeTo(null);
-		this.setVisible(true);
-			
+		this.setVisible(true);		
 	}
 	
 	public static BufferedImage getNewImage() throws IOException {

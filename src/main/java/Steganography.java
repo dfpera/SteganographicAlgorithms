@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -21,8 +22,8 @@ public abstract class Steganography {
 	 */
 	public Steganography(BufferedImage coverImage, String message, int payloadWidth, int payloadHeight) {
 		try {
-			this.coverImage = coverImage;
 			this.stegoImage = new BufferedImage(coverImage.getWidth(), coverImage.getHeight(), BufferedImage.TYPE_USHORT_GRAY);
+			this.coverImage = adjustCoverImage(coverImage);
 			this.payload = Payload.getQRCodeImage(message, payloadWidth, payloadHeight);
 			this.payloadSize =  payloadWidth * payloadHeight;
 		} catch (WriterException e) {
@@ -30,6 +31,35 @@ public abstract class Steganography {
         } catch (IOException e) {
             System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
         }
+	}
+	
+	/*
+	 * This function is simply to make the implementation of steganography easier.
+	 * Gets rid of edge cases at 0 and 255 rgb values.
+	 * 
+	 * @param BufferedImage - the image that will have it's max and min values adjusted by 1 respectively
+	 * @return BufferedImage - the adjusted image
+	 */
+	private BufferedImage adjustCoverImage(BufferedImage image) {
+		BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		for (int y = 0; y < image.getHeight(); y++) {
+			for (int x = 0; x < image.getWidth(); x++) {
+				// Get rgb value
+				int color = image.getRGB(x, y) & 0xff;
+
+				// If max value minus 1
+				if (color == 255) {
+					color--;
+				// If min value add 1
+				} else if (color == 0) {
+					color++;
+				}
+				
+				// Set new rgb value
+				result.setRGB(x, y, new Color(color, color, color).getRGB());
+			}
+		}
+		return result;
 	}
 	
 	/*
