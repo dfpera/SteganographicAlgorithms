@@ -113,27 +113,26 @@ public class ScrollPanel extends JPanel implements ActionListener {
 			g2.drawImage(StegoApp.threeBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
 			g2.drawImage(StegoApp.fiveBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
 			
-			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeTwoN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.oneNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.twoNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
 
+			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeTwoN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.twoNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
 			
-			g2.drawImage(StegoApp.oneBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeFiveBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.oneBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
-
 	    }
 	    
 	    g2.setColor(new Color(150, 150, 150));
@@ -144,14 +143,14 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		g2.drawString("1-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.052));
 		g2.drawString("3-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.152));
 		g2.drawString("5-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.252));
-		g2.drawString("Exploiting Modification Direction (EMD)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
-		g2.drawString("n = 1:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.372));
-		g2.drawString("n = 2:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.472));
-		g2.drawString("n = 3:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.572));
-		g2.drawString("Optimal Pixel Adjustment Process (OPAP)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.66));
-		g2.drawString("1-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.692));
-		g2.drawString("3-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.792));
-		g2.drawString("5-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.892));
+		g2.drawString("Optimal Pixel Adjustment Process (OPAP)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.34));
+		g2.drawString("1-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.372));
+		g2.drawString("3-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.472));
+		g2.drawString("5-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.572));
+		g2.drawString("Exploiting Modification Direction (EMD)", (int)(windowWidth * 0.05), (int)(windowHeight * 0.66));
+		g2.drawString("n = 1:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.692));
+		g2.drawString("n = 2:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.792));
+		g2.drawString("n = 3:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.892));
 
 		g2.setFont(bodyFont);
 		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
@@ -172,21 +171,39 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		    g2.drawString(line, x, y);
 		}
 		
-//		String opapDescription = "Spatial domain steganographic methods such as Least Significant Bit \n"
-//	              + "(LSB) have high embedding capacities and easy implementation. Although, \n"
-//	              + "this method comes with a price of higher perceptibility and image distortion, \n"
-//	              + "which are undesired traits of any good steganography methods. The LSB \n"
-//	              + "method embeds messages within the least significant bits of the cover image \n"
-//	              + "and can use n of these bits (\"n-bit(s)\") to accomplish the embedding. The higher \n"
-//	              + "the n, the higher the embedding capacity and the lower the output image quality.";
-//
-//		String [] linesOPAP = opapDescription.split("\n");
-//		for (int lineCount = 0; lineCount < linesOPAP.length; lineCount++) {
-//			int x = (int)(windowWidth * 0.05);
-//			int y = (int)(windowHeight * 0.04) + lineCount * lineHeight;
-//			String line = linesLSB[lineCount];
-//			g2.drawString(line, x, y);
-//		}
+		String opapDescription = "Optimal Pixel Adjustment Process (OPAP) is an extension of LSB. Bits are \n"
+							   + "first embedded using LSB to the required bit depth, then OPAP is used to \n"
+							   + "adjust the error introduced from LSB. For example, if an 8-bit pixel value is \n"
+							   + "00010000 (decimal 16), and a secret message 1111 is to be embedded using \n"
+							   + "4-bit LSB, then the new pixel value would be 00011111 (decimal 31) with an \n"
+							   + "embedding error of 15. Applying OPAP would then adjust the fifth bit to from a \n"
+							   + "1 to a 0 without damaging the embedded data. This leaves the OPAP pixel \n" 
+							   + "value at 00001111 (decimal 15) with an embedding error of 1.";
+
+		String [] linesOPAP = opapDescription.split("\n");
+		for (int lineCount = 0; lineCount < linesOPAP.length; lineCount++) {
+			int x = (int)(windowWidth * 0.05);
+			int y = (int)(windowHeight * 0.36) + lineCount * lineHeight;
+			String line = linesOPAP[lineCount];
+			g2.drawString(line, x, y);
+		}
+		
+		String emdDescription = "The idea behind Exploiting Modification Direction (EMD) is that n cover pixels \n"
+							  + "are capable of carrying a base-(2n+1) secret digit and only one pixel value \n"
+							  + "may be increased or decreased by 1 at most. EMD is a much stronger \n"
+						      + "steganographic algorithm compared to LSB and OPAP. A simple breakdown \n"
+							  + "of the process is as follows: 1) Convert the secret data into base-(2n+1). \n"
+							  + "2) Calculate the extraction function on n cover pixels. 3) Compare the extraction \n"
+							  + "function result with EMD conditions to determine which pixel is increased by 1, \n" 
+							  + "decreased by 1, or no change is made.";
+
+		String [] linesEMD = emdDescription.split("\n");
+			for (int lineCount = 0; lineCount < linesEMD.length; lineCount++) {
+			int x = (int)(windowWidth * 0.05);
+			int y = (int)(windowHeight * 0.68) + lineCount * lineHeight;
+			String line = linesEMD[lineCount];
+			g2.drawString(line, x, y);
+		}
         
 		// underlines
 		g2.setColor(new Color(200, 200, 200));
