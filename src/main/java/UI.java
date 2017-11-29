@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.Histogram;
@@ -47,18 +48,19 @@ public class UI extends JPanel implements ActionListener {
 	private int windowHeight = (int)(screenSize.height * 0.9);
 	private static UIState state;
 	
-	private JButton startButton, embedButton, randomizeButton;
+	private JButton startButton, definitionButton, closeButton, embedButton, randomizeButton;
 	private JTextField textBox;
 	private JLabel inputLabel;
 	private Font titleFont = new Font("Mononoki", Font.BOLD, 65);
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
+	private Font headerFont = new Font("Mononoki", Font.BOLD, 18);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
+	private Font bodyFont = new Font("Arial", Font.PLAIN, 12);
 	public static boolean showQR, showModal;
 	public static String secretMessage = "Enter your secret message";
 	ScrollPanel scrollUI;
 	JScrollPane scroll;
     HistogramCreator histogramCreator;
-
 	
 	public UI(JFrame frame) {
 		super();
@@ -80,6 +82,16 @@ public class UI extends JPanel implements ActionListener {
 		startButton.addActionListener(this);
 		startButton.setVisible(true);	
 		
+		definitionButton = createButton("Show Definitions",(int)(windowWidth * 0.57), (int)(windowHeight * 0.8), windowWidth / 6, windowHeight / 10);
+		add(definitionButton);
+		definitionButton.addActionListener(this);
+		definitionButton.setVisible(true);	
+		
+		closeButton = createButton("×",(int)(windowWidth * 0.78), (int)(windowHeight * 0.2), (int)(windowHeight * 0.05), (int)(windowHeight * 0.05));
+		add(closeButton);
+		closeButton.addActionListener(this);
+		closeButton.setVisible(false);	
+		
 		embedButton = createButton("Embed Text", (int)(windowWidth * 0.36), (int)(windowHeight * 0.09), windowWidth / 8, windowHeight / 12);
 		embedButton.addActionListener(this);
 		embedButton.setVisible(false);	
@@ -89,6 +101,7 @@ public class UI extends JPanel implements ActionListener {
 		randomizeButton.setVisible(false);	
 
         histogramCreator = new HistogramCreator();
+        
 		
 	} // end UI
 
@@ -109,10 +122,11 @@ public class UI extends JPanel implements ActionListener {
 			case HOME: // First screen user sees
 				showHomeScreen(g2);
 				break;
+			case DEFINITIONS:
+				showDefinitions(g2);
+				break;
 			case MAIN: // Main screen after clicking Start
 				showMainScreen(g2);
-				add(embedButton);
-				add(randomizeButton);
 				scrollUI = new ScrollPanel(null);
 				scroll = new JScrollPane(scrollUI);
 		        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -127,6 +141,9 @@ public class UI extends JPanel implements ActionListener {
 	} // end paint
 	
 	private void showHomeScreen(Graphics2D g2) {	
+		startButton.setVisible(true);
+		definitionButton.setVisible(true);
+		closeButton.setVisible(false);
 		for (int i = 0; i < windowWidth; i += 10) {
 			for (int j = 0; j < windowHeight; j += 10) {
 				if (Math.random() < 0.5) {
@@ -140,12 +157,109 @@ public class UI extends JPanel implements ActionListener {
 		g2.fillRect(0, windowHeight / 4, windowWidth, windowHeight * 3 / 4);
 		g2.setColor(new Color(22, 144, 129));
 		g2.setFont(titleFont);
-		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);	        
+		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);	
+	}
+	
+	private void showDefinitions(Graphics2D g2) {
+		startButton.setVisible(false);
+		definitionButton.setVisible(false);
+		closeButton.setVisible(true);
+		for (int i = 0; i < windowWidth; i += 10) {
+			for (int j = 0; j < windowHeight; j += 10) {
+				if (Math.random() < 0.5) {
+					g2.setColor(new Color(220, 220, 220));
+					g2.fillRect(i, j, 10, 10);
+				}
+			}
+		}
+		GradientPaint background = new GradientPaint(0, windowHeight / 4, new Color(200, 200, 200, 0), 0, windowHeight, Color.white);
+		g2.setPaint(background);
+		g2.fillRect(0, windowHeight / 4, windowWidth, windowHeight * 3 / 4);
+		g2.setColor(new Color(22, 144, 129));
+		g2.setFont(titleFont);
+		g2.drawString("StegoCompare", (int)(windowWidth * 0.3), windowHeight / 2);	
+		g2.setPaint(new Color(0, 0, 0, 100));
+		g2.fillRect(0, 0, windowWidth, windowHeight);
+		g2.setPaint(Color.white);
+		g2.fillRect(windowWidth / 6, windowHeight / 6, windowWidth * 4 / 6, windowHeight * 2 / 3 + 10);
+		
+		g2.setFont(headingFont);
+		g2.setColor(new Color(22, 144, 129));
+		g2.drawString("Definitions", (int)(windowWidth * 0.2), (int)(windowHeight * 0.24));
+		g2.setColor(new Color(150, 150, 150));
+		g2.drawString("Steganography", (int)(windowWidth * 0.21), (int)(windowHeight * 0.3));
+		g2.drawString("PSNR", (int)(windowWidth * 0.21), (int)(windowHeight * 0.4));
+		g2.drawString("Difference images", (int)(windowWidth * 0.21), (int)(windowHeight * 0.52));
+		g2.drawString("Spatial domain", (int)(windowWidth * 0.21), (int)(windowHeight * 0.637));
+		g2.drawString("Frequency domain", (int)(windowWidth * 0.21), (int)(windowHeight * 0.735));
+
+		g2.setFont(bodyFont);
+		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
+		
+		String definitionStego = "The art and science of concealing messages in multimedia carriers. In this project we explore the embedding of binary \n"
+				               + "images into grayscale images. \n";
+		String [] linesStego = definitionStego.split("\n");
+		
+		String definitionPSNR = "PSNR or peak signal-to-noise ratio is used to measure the quality of a stego-image. The signal in this case is the original \n"
+							  + "cover-image, and the noise is the error introduced by embedding the message. Since we are using 8-bit greyscale images, \n"
+							  + "our values will range between 30dB and 50dB where anything above 40dB is considered ideal. \n";
+		String [] linesPSNR = definitionPSNR.split("\n");
+		
+		String definitionDifference = "The difference image is calculated by taking the absolute value of stego-image minus the cover-image then adjusting the \n"
+									+ "brightness to see a visible difference. These images can then be compared with other steganographic methods to \n"
+									+ "determine a method’s effectiveness. \n";
+		String [] linesDifference = definitionDifference.split("\n");
+		
+		String definitionSpatial = "Spatial domain steganography involves direct modifications on the pixel values, at the least significant bit (LSB) level. \n"
+								 + "This method, though simple, has a larger impact on the resulting stego-image than other methods. \n";
+		String [] linesSpatial = definitionSpatial.split("\n");		
+		
+		String definitionFrequency = "Frequency domain steganography involves applying a transformation on the cover image, and then hiding the secret \n"
+								   + "message bits inside the coefficients of the transformed cover image \n";
+		String [] linesFrequency   = definitionFrequency.split("\n");	
+		
+		for (int lineCount = 0; lineCount < linesStego.length; lineCount++) {
+		    int x = (int)(windowWidth * 0.21);
+		    int y = (int)(windowHeight * 0.33) + lineCount * lineHeight;
+		    String line = linesStego[lineCount];
+		    g2.drawString(line, x, y);
+		}
+		
+		for (int lineCount = 0; lineCount < linesPSNR.length; lineCount++) {
+		    int x = (int)(windowWidth * 0.21);
+		    int y = (int)(windowHeight * 0.43) + lineCount * lineHeight;
+		    String line = linesPSNR[lineCount];
+		    g2.drawString(line, x, y);
+		}
+		
+		for (int lineCount = 0; lineCount < linesDifference.length; lineCount++) {
+		    int x = (int)(windowWidth * 0.21);
+		    int y = (int)(windowHeight * 0.548) + lineCount * lineHeight;
+		    String line = linesDifference[lineCount];
+		    g2.drawString(line, x, y);
+		}
+		
+		for (int lineCount = 0; lineCount < linesSpatial.length; lineCount++) {
+		    int x = (int)(windowWidth * 0.21);
+		    int y = (int)(windowHeight * 0.665) + lineCount * lineHeight;
+		    String line = linesSpatial[lineCount];
+		    g2.drawString(line, x, y);
+		}
+		
+		for (int lineCount = 0; lineCount < linesFrequency.length; lineCount++) {
+		    int x = (int)(windowWidth * 0.21);
+		    int y = (int)(windowHeight * 0.765) + lineCount * lineHeight;
+		    String line = linesFrequency[lineCount];
+		    g2.drawString(line, x, y);
+		}
+		
 	}
 	
 	private void showMainScreen(Graphics2D g2) {
-		
+		add(embedButton);
+		add(randomizeButton);
 	    remove(startButton);
+	    remove(definitionButton);
 		textBox.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.1), (int)(windowWidth * 0.3), windowHeight / 15);
 		inputLabel.setBounds((int)(windowWidth * 0.05), (int)(windowHeight * 0.05), windowWidth / 3, windowHeight / 15);
 		embedButton.setVisible(true);
@@ -174,7 +288,7 @@ public class UI extends JPanel implements ActionListener {
 	    }
 	    	    
 	    g2.setColor(new Color(150, 150, 150));
-		g2.setFont(headingFont);
+		g2.setFont(headerFont);
 		g2.drawString("Algorithms", (int)(windowWidth * 0.05), (int)(windowHeight * 0.29));
 	    
 		g2.setFont(labelFont);
@@ -196,7 +310,13 @@ public class UI extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == "Start") {
 			setState(UIState.MAIN);
-		}			
+		}	
+		if (e.getActionCommand() == "Show Definitions") {
+			setState(UIState.DEFINITIONS);
+		}	
+		if (e.getActionCommand() == "×") {
+			setState(UIState.HOME);
+		}	
 		if (e.getActionCommand() == "Embed Text") {
 			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
@@ -212,7 +332,7 @@ public class UI extends JPanel implements ActionListener {
 			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
-			updateImages();
+			updateImages();;
 		}	
 		repaint();
 	}
@@ -220,22 +340,22 @@ public class UI extends JPanel implements ActionListener {
 	private void updateImages() {  
 		
 		// Display a histogram (currently shows up in wrong place for testing purposes)
-		Histogram histogramGrayscale = histogramCreator.createHistogram(StegoApp.coverImage);
-	    this.addHistogram(StegoApp.coverImage, histogramGrayscale, 0, 0, 240, 150);
+		// Histogram histogramGrayscale = histogramCreator.createHistogram(StegoApp.coverImage);
+	    // this.addHistogram(StegoApp.coverImage, histogramGrayscale, 0, 0, 240, 150);
 		
-		LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 512, 512);
+		LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 35, 35);
 		oneBit.embed();
 		StegoApp.oneBitStegoImage = oneBit.getStegoImage();
 		StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
 		StegoApp.oneBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.oneBitStegoImage);
 
-		LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 512, 512);
+		LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 35, 35);
 		threeBit.embed();
 		StegoApp.threeBitStegoImage = threeBit.getStegoImage();
 		StegoApp.qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
 		StegoApp.threeBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeBitStegoImage);
 		
-		LSB fiveBit = new LSB(StegoApp.coverImage, 5, secretMessage, 512, 512);
+		LSB fiveBit = new LSB(StegoApp.coverImage, 5, secretMessage, 35, 35);
 		fiveBit.embed();
 		StegoApp.fiveBitStegoImage = fiveBit.getStegoImage();
 		StegoApp.qrCodeFiveBit = MatrixToImageWriter.toBufferedImage(fiveBit.extract());
@@ -259,19 +379,19 @@ public class UI extends JPanel implements ActionListener {
 		StegoApp.qrCodeThreeN = MatrixToImageWriter.toBufferedImage(threeN.extract());
 		StegoApp.threeNDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeNStegoImage);
 		
-		OPAP oneBitOPAP = new OPAP(StegoApp.coverImage, 1, secretMessage, 512, 512);
+		OPAP oneBitOPAP = new OPAP(StegoApp.coverImage, 1, secretMessage, 35, 35);
 		oneBitOPAP.embed();
 		StegoApp.oneBitOPAPStegoImage = oneBitOPAP.getStegoImage();
 		StegoApp.qrCodeOneBitOPAP = MatrixToImageWriter.toBufferedImage(oneBitOPAP.extract());
 		StegoApp.oneBitOPAPDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.oneBitOPAPStegoImage);
 
-		OPAP threeBitOPAP = new OPAP(StegoApp.coverImage, 3, secretMessage, 512, 512);
+		OPAP threeBitOPAP = new OPAP(StegoApp.coverImage, 3, secretMessage, 35, 35);
 		threeBitOPAP.embed();
 		StegoApp.threeBitOPAPStegoImage = threeBitOPAP.getStegoImage();
 		StegoApp.qrCodeThreeBitOPAP = MatrixToImageWriter.toBufferedImage(threeBitOPAP.extract());
 		StegoApp.threeBitOPAPDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeBitOPAPStegoImage);
 		
-		OPAP fiveBitOPAP = new OPAP(StegoApp.coverImage, 5, secretMessage, 512, 512);
+		OPAP fiveBitOPAP = new OPAP(StegoApp.coverImage, 5, secretMessage, 35, 35);
 		fiveBitOPAP.embed();
 		StegoApp.fiveBitOPAPStegoImage = fiveBitOPAP.getStegoImage();
 		StegoApp.qrCodeFiveBitOPAP = MatrixToImageWriter.toBufferedImage(fiveBitOPAP.extract());

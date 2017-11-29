@@ -1,5 +1,6 @@
 
 public enum UIState {
 	HOME,
-	MAIN,
+	DEFINITIONS,
+	MAIN
 }

@@ -138,24 +138,6 @@ public class ScrollPanel extends JPanel implements ActionListener {
 	    
 	    g2.setColor(new Color(150, 150, 150));
 		g2.setFont(labelFont);
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.570), (int)(windowHeight * 0.006));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.200));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.300));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.420));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.520));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.620));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.740));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.840));
-//		g2.drawString("Stego-image", (int)(windowWidth * 0.665), (int)(windowHeight * 0.940));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.100));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.200));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.300));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.420));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.520));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.620));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.740));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.840));
-//		g2.drawString("Extracted QR code", (int)(windowWidth * 0.805), (int)(windowHeight * 0.940));
 	
 		g2.setFont(headingFont);
 		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.02));
@@ -172,6 +154,8 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		g2.drawString("5-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.892));
 
 		g2.setFont(bodyFont);
+		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
+		
 		String lsbDescription = "Spatial domain steganographic methods such as Least Significant Bit \n"
 				              + "(LSB) have high embedding capacities and easy implementation. Although, \n"
 				              + "this method comes with a price of higher perceptibility and image distortion, \n"
@@ -180,14 +164,29 @@ public class ScrollPanel extends JPanel implements ActionListener {
 				              + "and can use n of these bits (\"n-bit(s)\") to accomplish the embedding. The higher \n"
 				              + "the n, the higher the embedding capacity and the lower the output image quality.";
 	
-		String [] lines = lsbDescription.split("\n");
-		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
-		for (int lineCount = 0; lineCount < lines.length; lineCount++) {
+		String [] linesLSB = lsbDescription.split("\n");
+		for (int lineCount = 0; lineCount < linesLSB.length; lineCount++) {
 		    int x = (int)(windowWidth * 0.05);
 		    int y = (int)(windowHeight * 0.04) + lineCount * lineHeight;
-		    String line = lines[lineCount];
+		    String line = linesLSB[lineCount];
 		    g2.drawString(line, x, y);
 		}
+		
+//		String opapDescription = "Spatial domain steganographic methods such as Least Significant Bit \n"
+//	              + "(LSB) have high embedding capacities and easy implementation. Although, \n"
+//	              + "this method comes with a price of higher perceptibility and image distortion, \n"
+//	              + "which are undesired traits of any good steganography methods. The LSB \n"
+//	              + "method embeds messages within the least significant bits of the cover image \n"
+//	              + "and can use n of these bits (\"n-bit(s)\") to accomplish the embedding. The higher \n"
+//	              + "the n, the higher the embedding capacity and the lower the output image quality.";
+//
+//		String [] linesOPAP = opapDescription.split("\n");
+//		for (int lineCount = 0; lineCount < linesOPAP.length; lineCount++) {
+//			int x = (int)(windowWidth * 0.05);
+//			int y = (int)(windowHeight * 0.04) + lineCount * lineHeight;
+//			String line = linesLSB[lineCount];
+//			g2.drawString(line, x, y);
+//		}
         
 		// underlines
 		g2.setColor(new Color(200, 200, 200));

@@ -38,7 +38,7 @@ public class StegoApp extends JFrame {
 
 	public static void main(String[] args) {
         try {
-           coverImage = ImageIO.read(new File("assets/18.pgm"));
+           coverImage = ImageIO.read(new File("assets/16.pgm"));
            testImage = ImageIO.read(new File("assets/10.pgm"));
         		
 	        // Create stego image
