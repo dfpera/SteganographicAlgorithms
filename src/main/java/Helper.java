@@ -1,5 +1,9 @@
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Helper {
 	/*
@@ -54,18 +58,64 @@ public class Helper {
 	 */
 	public static BufferedImage differenceImage(BufferedImage cover, BufferedImage stego) {
 		BufferedImage result = new BufferedImage(cover.getWidth(), cover.getHeight(), stego.getType());
+		double power = 1.0 / 5.0;
 		
 		// Iterate through each image and take the absolute difference
 		for (int y = 0; y < cover.getHeight(); y++) {
 			for (int x = 0; x < cover.getWidth(); x++) {
-				// Compute the difference
-				int difference = Math.abs((cover.getRGB(x, y) & 0xff) - (stego.getRGB(x, y) & 0xff));
+//				// Compute the difference
+//				double difference = (double) Math.abs((cover.getRGB(x, y) & 0xff) - (stego.getRGB(x, y) & 0xff)) / 255.0;
+//				
+//				// Gamma correct to brighten colors
+//				difference = Math.pow(difference, power);
+//				int val = (int) (difference * 255.0);
+//				if (val > 255) val = 255;
+				
+				int val = Math.abs((cover.getRGB(x, y) & 0xff) - (stego.getRGB(x, y) & 0xff));
+				val*= 70;
+				if (val > 255) val = 255;
 				
 				// Set the resulting pixel
-				result.setRGB(x, y, new Color(difference, difference, difference).getRGB());
+				result.setRGB(x, y, new Color(val, val, val).getRGB());
 			}
 		}
 		
 		return result;
+	}
+	
+	/*
+	 * 
+	 */
+	public static void generateBackgroundImageToFile(int width, int height, int squareSize) {
+		BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		for (int y = 0; y < height; y += squareSize) {
+			for (int x = 0; x < width; x += squareSize) {
+				if (Math.random() < 0.5) {
+					for (int i = 0; i < squareSize; i++) {
+						for (int j = 0; j < squareSize; j++) {
+							if (y+i < height && x+i < width) {
+								result.setRGB(x+j, y+i, new Color(0, 0, 0).getRGB());
+							}
+						}
+					}
+				} else {
+					for (int i = 0; i < squareSize; i++) {
+						for (int j = 0; j < squareSize; j++) {
+							if (y+i < height && x+i < width) {
+								result.setRGB(x+j, i, new Color(255, 255, 255).getRGB());
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Output to file
+		File file = new File("OUTPUT/background-" + width + "x" + height + "-" + squareSize + ".png");
+		try {
+			ImageIO.write(result, "png", file);
+		} catch (IOException e) {
+            System.out.println("Could not create background Image: " + e.getMessage());
+        }
 	}
 }
