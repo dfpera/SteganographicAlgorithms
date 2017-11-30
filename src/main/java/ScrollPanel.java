@@ -27,6 +27,7 @@ public class ScrollPanel extends JPanel {
 	
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
+	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	public static boolean showModal;
 	
 	HistogramPanel[] histLSB;
@@ -37,22 +38,22 @@ public class ScrollPanel extends JPanel {
 		super();	
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
-		
+				
 		// Create Histograms
 		histLSB = new HistogramPanel[] {
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8)
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.125), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1)),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.26), (int)(windowHeight * 0.125), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1)),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.222), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1))
 		};
 		histOPAP = new HistogramPanel[] {
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8)
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.455), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1)),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.26), (int)(windowHeight * 0.455), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1)),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.545), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1))
 		};
 		histEMD = new HistogramPanel[] {
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
-				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8)
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.780), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1)),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.26), (int)(windowHeight * 0.780), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1)),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.877), (int)(windowWidth * 0.19), (int)(windowWidth * 0.1))
 		};
 	}
 	
@@ -151,6 +152,21 @@ public class ScrollPanel extends JPanel {
 		g2.fillRect(0, (int)(windowHeight * 0.320), windowWidth, 1);
 		g2.fillRect(0, (int)(windowHeight * 0.64), windowWidth, 1);
 		
+		// Histogram titles
+		g2.setColor(new Color(150, 150, 150));
+		g2.setFont(labelFont);
+		
+		g2.drawString("Histogram: Cover image", (int)(windowWidth * 0.075), (int)(windowHeight * 0.207));
+		g2.drawString("Histogram: After 3-bit LSB", (int)(windowWidth * 0.275), (int)(windowHeight * 0.207));
+		g2.drawString("Histogram: Difference image", (int)(windowWidth * 0.063), (int)(windowHeight * 0.304));
+		
+		g2.drawString("Histogram: Cover image", (int)(windowWidth * 0.075), (int)(windowHeight * 0.536));
+		g2.drawString("Histogram: After 3-bit OPAP", (int)(windowWidth * 0.275), (int)(windowHeight * 0.536));
+		g2.drawString("Histogram: Difference image", (int)(windowWidth * 0.063), (int)(windowHeight * 0.625));
+		
+		g2.drawString("Histogram: Cover image", (int)(windowWidth * 0.075), (int)(windowHeight * 0.862));
+		g2.drawString("Histogram: After EMD (n=2)", (int)(windowWidth * 0.275), (int)(windowHeight * 0.862));
+		g2.drawString("Histogram: Difference image", (int)(windowWidth * 0.063), (int)(windowHeight * 0.959));
 		
 	    if (!UI.showQR) {
 	    	// Placeholder Image Squares
@@ -255,8 +271,17 @@ public class ScrollPanel extends JPanel {
      * TODO: Add comment
      */
     public void updateHistogram(HistogramPanel hp, BufferedImage image) {
+    	BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+    	for (int x = 0; x < image.getWidth(); x++) {
+    		for (int y = 0; y < image.getHeight(); y++) {
+    			int rgb = image.getRGB(x, y);
+    			Color c = new Color(rgb);
+    			int newC = c.getRGB();
+				newImage.setRGB(x, y, newC);
+    		}
+    	}
     	hp.histogram.clearHistogram();
-    	hp.histogram.countPixels(image.getRaster(), null, 0, 0, 1, 1);
+    	hp.histogram.countPixels(newImage.getRaster(), null, 0, 0, 1, 1);
     	((HistogramPanel) hp).repaint();
     }
 } //end ScrollPanel class

@@ -344,6 +344,8 @@ public class UI extends JPanel implements ActionListener {
 		StegoApp.oneBitStegoImage = oneBit.getStegoImage();
 		StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
 		StegoApp.oneBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.oneBitStegoImage);
+		System.out.print(StegoApp.oneBitStegoImage.getType());
+		System.out.print(StegoApp.coverImage.getType());
 
 		LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 35, 35);
 		threeBit.embed();
