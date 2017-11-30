@@ -12,12 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import javax.media.jai.Histogram;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JFrame;
@@ -333,12 +329,7 @@ public class UI extends JPanel implements ActionListener {
 		repaint();
 	}
 	
-	private void updateImages() {  
-		
-		// Display a histogram (currently shows up in wrong place for testing purposes)
-		// Histogram histogramGrayscale = histogramCreator.createHistogram(StegoApp.coverImage);
-	    // this.addHistogram(StegoApp.coverImage, histogramGrayscale, 0, 0, 240, 150);
-		
+	private void updateImages() {  	
 		LSB oneBit = new LSB(StegoApp.coverImage, 1, secretMessage, 35, 35);
 		oneBit.embed();
 		StegoApp.oneBitStegoImage = oneBit.getStegoImage();
@@ -352,6 +343,14 @@ public class UI extends JPanel implements ActionListener {
 		StegoApp.threeBitStegoImage = threeBit.getStegoImage();
 		StegoApp.qrCodeThreeBit = MatrixToImageWriter.toBufferedImage(threeBit.extract());
 		StegoApp.threeBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeBitStegoImage);
+		StegoApp.histoStegoLSB = new BufferedImage(StegoApp.threeBitStegoImage.getWidth(), StegoApp.threeBitStegoImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		StegoApp.histoDifLSB = new BufferedImage(StegoApp.threeBitDifference.getWidth(), StegoApp.threeBitDifference.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		for (int y = 0; y < StegoApp.threeBitStegoImage.getHeight(); y++) {
+			for (int x = 0; x < StegoApp.threeBitStegoImage.getWidth(); x++) {
+				StegoApp.histoStegoLSB.setRGB(x, y, StegoApp.threeBitStegoImage.getRGB(x, y));
+				StegoApp.histoDifLSB.setRGB(x, y, StegoApp.threeBitDifference.getRGB(x, y));
+			}
+		}
 		
 		LSB fiveBit = new LSB(StegoApp.coverImage, 5, secretMessage, 35, 35);
 		fiveBit.embed();
@@ -370,6 +369,14 @@ public class UI extends JPanel implements ActionListener {
 		StegoApp.twoNStegoImage = twoN.getStegoImage();
 		StegoApp.qrCodeTwoN = MatrixToImageWriter.toBufferedImage(twoN.extract());
 		StegoApp.twoNDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.twoNStegoImage);
+		StegoApp.histoStegoEMD = new BufferedImage(StegoApp.twoNStegoImage.getWidth(), StegoApp.twoNStegoImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		StegoApp.histoDifEMD = new BufferedImage(StegoApp.twoNDifference.getWidth(), StegoApp.twoNDifference.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		for (int y = 0; y < StegoApp.twoNStegoImage.getHeight(); y++) {
+			for (int x = 0; x < StegoApp.twoNStegoImage.getWidth(); x++) {
+				StegoApp.histoStegoEMD.setRGB(x, y, StegoApp.twoNStegoImage.getRGB(x, y));
+				StegoApp.histoDifEMD.setRGB(x, y, StegoApp.twoNDifference.getRGB(x, y));
+			}
+		}
 		
 		EMD threeN = new EMD(StegoApp.coverImage, 3, secretMessage, 35, 35);
 		threeN.embed();
@@ -388,6 +395,14 @@ public class UI extends JPanel implements ActionListener {
 		StegoApp.threeBitOPAPStegoImage = threeBitOPAP.getStegoImage();
 		StegoApp.qrCodeThreeBitOPAP = MatrixToImageWriter.toBufferedImage(threeBitOPAP.extract());
 		StegoApp.threeBitOPAPDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.threeBitOPAPStegoImage);
+		StegoApp.histoStegoOPAP = new BufferedImage(StegoApp.threeBitOPAPStegoImage.getWidth(), StegoApp.threeBitOPAPStegoImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		StegoApp.histoDifOPAP = new BufferedImage(StegoApp.threeBitOPAPDifference.getWidth(), StegoApp.threeBitOPAPDifference.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		for (int y = 0; y < StegoApp.threeBitOPAPStegoImage.getHeight(); y++) {
+			for (int x = 0; x < StegoApp.threeBitOPAPStegoImage.getWidth(); x++) {
+				StegoApp.histoStegoOPAP.setRGB(x, y, StegoApp.threeBitOPAPStegoImage.getRGB(x, y));
+				StegoApp.histoDifOPAP.setRGB(x, y, StegoApp.threeBitOPAPDifference.getRGB(x, y));
+			}
+		}
 		
 		OPAP fiveBitOPAP = new OPAP(StegoApp.coverImage, 5, secretMessage, 35, 35);
 		fiveBitOPAP.embed();

@@ -215,8 +215,8 @@ public class ScrollPanel extends JPanel {
 			
 			// Update LSB Histograms
 			updateHistogram(histLSB[0], StegoApp.coverImage);
-			updateHistogram(histLSB[1], StegoApp.threeBitStegoImage);
-			updateHistogram(histLSB[2], StegoApp.threeBitDifference);
+			updateHistogram(histLSB[1], StegoApp.histoStegoLSB);
+			updateHistogram(histLSB[2], StegoApp.histoDifLSB);
 			
 			// Draw images for OPAP
 			g2.drawImage(StegoApp.oneBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
@@ -231,8 +231,8 @@ public class ScrollPanel extends JPanel {
 			
 			// Update OPAP Histograms
 			updateHistogram(histOPAP[0], StegoApp.coverImage);
-			updateHistogram(histOPAP[1], StegoApp.threeBitOPAPStegoImage);
-			updateHistogram(histOPAP[2], StegoApp.threeBitOPAPDifference);
+			updateHistogram(histOPAP[1], StegoApp.histoStegoOPAP);
+			updateHistogram(histOPAP[2], StegoApp.histoDifOPAP);
 
 			// Draw images for EMD
 			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
@@ -247,8 +247,8 @@ public class ScrollPanel extends JPanel {
 			
 			// Update EMD Histograms
 			updateHistogram(histEMD[0], StegoApp.coverImage);
-			updateHistogram(histEMD[1], StegoApp.twoNStegoImage);
-			updateHistogram(histEMD[2], StegoApp.threeNDifference);
+			updateHistogram(histEMD[1], StegoApp.histoStegoEMD);
+			updateHistogram(histEMD[2], StegoApp.histoDifEMD);
 	    } 
 	} // end showMainScreen
     
@@ -272,17 +272,8 @@ public class ScrollPanel extends JPanel {
      * TODO: Add comment
      */
     public void updateHistogram(HistogramPanel hp, BufferedImage image) {
-    	BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-    	for (int x = 0; x < image.getWidth(); x++) {
-    		for (int y = 0; y < image.getHeight(); y++) {
-    			int rgb = image.getRGB(x, y);
-    			Color c = new Color(rgb);
-    			int newC = c.getRGB();
-				newImage.setRGB(x, y, newC);
-    		}
-    	}
     	hp.histogram.clearHistogram();
-    	hp.histogram.countPixels(newImage.getRaster(), null, 0, 0, 1, 1);
+    	hp.histogram.countPixels(image.getRaster(), null, 0, 0, 1, 1);
     	((HistogramPanel) hp).repaint();
     }
 } //end ScrollPanel class
