@@ -123,7 +123,7 @@ public class UI extends JPanel implements ActionListener {
 				scroll = new JScrollPane(scrollUI);
 		        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		        scroll.setBounds(0, (int)(windowHeight * 0.302), windowWidth, (int)(windowHeight * 0.719));
+		        scroll.setBounds(0, (int)(windowHeight * 0.302), windowWidth, (int)(windowHeight * 0.698));
 		        scroll.getVerticalScrollBar().setUnitIncrement(16);
 		        scroll.setBorder(null);
 				this.add(scroll);				
@@ -335,8 +335,6 @@ public class UI extends JPanel implements ActionListener {
 		StegoApp.oneBitStegoImage = oneBit.getStegoImage();
 		StegoApp.qrCodeOneBit = MatrixToImageWriter.toBufferedImage(oneBit.extract());
 		StegoApp.oneBitDifference = Helper.differenceImage(StegoApp.coverImage, StegoApp.oneBitStegoImage);
-		System.out.print(StegoApp.oneBitStegoImage.getType());
-		System.out.print(StegoApp.coverImage.getType());
 
 		LSB threeBit = new LSB(StegoApp.coverImage, 3, secretMessage, 35, 35);
 		threeBit.embed();

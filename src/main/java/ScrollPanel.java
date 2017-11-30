@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 
 import javax.media.jai.Histogram;
 import javax.swing.JFrame;
@@ -28,11 +29,20 @@ public class ScrollPanel extends JPanel {
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
 	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
+	private Font psnrFont = new Font("Mononoki", Font.BOLD, 36);
 	public static boolean showModal;
 	
 	HistogramPanel[] histLSB;
 	HistogramPanel[] histOPAP;
 	HistogramPanel[] histEMD;
+	
+	DecimalFormat df = new DecimalFormat("0.00");
+	double psnrLSB;
+	String psnrLSBTrunc;
+	double psnrOPAP;
+	String psnrOPAPTrunc;
+	double psnrEMD;
+	String psnrEMDTrunc;
 	
 	public ScrollPanel(JFrame frame) {
 		super();	
@@ -169,6 +179,11 @@ public class ScrollPanel extends JPanel {
 		g2.drawString("Histogram: After EMD (n=2)", (int)(windowWidth * 0.275), (int)(windowHeight * 0.862));
 		g2.drawString("Histogram: Difference image", (int)(windowWidth * 0.063), (int)(windowHeight * 0.959));
 		
+		// Draw labels for PSNR
+		g2.drawString("Image quality (PSNR, 3-bit LSB)", (int)(windowWidth * 0.26), (int)(windowHeight * 0.304));
+		g2.drawString("Image quality (PSNR, 3-bit LSB)", (int)(windowWidth * 0.26), (int)(windowHeight * 0.625));
+		g2.drawString("Image quality (PSNR, n=2)", (int)(windowWidth * 0.28), (int)(windowHeight * 0.959));
+		
 	    if (!UI.showQR) {
 	    	// Placeholder Image Squares
 		    g2.setColor(new Color(200, 200, 200));	    
@@ -218,6 +233,12 @@ public class ScrollPanel extends JPanel {
 			updateHistogram(histLSB[1], StegoApp.histoStegoLSB);
 			updateHistogram(histLSB[2], StegoApp.histoDifLSB);
 			
+			// Draw PSNR value
+			g2.setFont(psnrFont);
+			psnrLSB = Helper.psnr(StegoApp.coverImage, StegoApp.threeBitStegoImage);
+			psnrLSBTrunc = df.format(psnrLSB);
+			g2.drawString(psnrLSBTrunc, (int)(windowWidth * 0.31), (int)(windowHeight * 0.28));
+			
 			// Draw images for OPAP
 			g2.drawImage(StegoApp.oneBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
 			g2.drawImage(StegoApp.threeBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
@@ -234,6 +255,12 @@ public class ScrollPanel extends JPanel {
 			updateHistogram(histOPAP[1], StegoApp.histoStegoOPAP);
 			updateHistogram(histOPAP[2], StegoApp.histoDifOPAP);
 
+			// Draw PSNR value
+			g2.setFont(psnrFont);
+			psnrOPAP = Helper.psnr(StegoApp.coverImage, StegoApp.threeBitOPAPStegoImage);
+			psnrOPAPTrunc = df.format(psnrOPAP);
+			g2.drawString(psnrOPAPTrunc, (int)(windowWidth * 0.31), (int)(windowHeight * 0.605));
+			
 			// Draw images for EMD
 			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
 			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
@@ -249,6 +276,12 @@ public class ScrollPanel extends JPanel {
 			updateHistogram(histEMD[0], StegoApp.coverImage);
 			updateHistogram(histEMD[1], StegoApp.histoStegoEMD);
 			updateHistogram(histEMD[2], StegoApp.histoDifEMD);
+			
+			// Draw PSNR value
+			g2.setFont(psnrFont);
+			psnrEMD = Helper.psnr(StegoApp.coverImage, StegoApp.twoNStegoImage);
+			psnrEMDTrunc = df.format(psnrEMD);
+			g2.drawString(psnrEMDTrunc, (int)(windowWidth * 0.31), (int)(windowHeight * 0.938));
 	    } 
 	} // end showMainScreen
     
