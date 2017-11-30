@@ -1,33 +1,16 @@
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.media.jai.Histogram;
-import javax.swing.JButton;
-import javax.swing.JTextField;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+
 
 /**
  * The ScrollPanel class implements the scrollable UI panel,
@@ -36,108 +19,62 @@ import javax.swing.border.LineBorder;
  * and Optimal Pixel Adjustment Process algorithms. 
  */
 
-public class ScrollPanel extends JPanel implements ActionListener {
-
-	private static final long serialVersionUID = 1L;
-    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+public class ScrollPanel extends JPanel {
+	private static final long serialVersionUID = 1733787764443127771L;
+	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private int windowWidth = (int)(screenSize.width * 0.9);
 	private int windowHeight = (int)(screenSize.height * 2.0);
 	
-	private Font labelFont = new Font("Mononoki", Font.ITALIC, 13);
 	private Font headingFont = new Font("Mononoki", Font.BOLD, 16);
 	private Font bodyFont = new Font("Arial", Font.PLAIN, 13);
 	public static boolean showModal;
-    HistogramCreator histogramCreator;
+	
+	HistogramPanel[] histLSB;
+	HistogramPanel[] histOPAP;
+	HistogramPanel[] histEMD;
 	
 	public ScrollPanel(JFrame frame) {
 		super();	
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		
-        histogramCreator = new HistogramCreator();
+		// Create Histograms
+		histLSB = new HistogramPanel[] {
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8)
+		};
+		histOPAP = new HistogramPanel[] {
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8)
+		};
+		histEMD = new HistogramPanel[] {
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8),
+				addHistogram(StegoApp.coverImage, (int)(windowWidth * 0.05), (int)(windowHeight * 0.152), windowWidth / 8, windowWidth / 8)
+		};
 	}
 	
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		// Draw all ScrollPanel graphics
 		showAlgorithmList(g2);		
 		
 	} // end paint
 	
 	private void showAlgorithmList(Graphics2D g2) {
+		// Set background of the scrolling panel
 		g2.setColor(new Color(255, 255, 255));
 		g2.fillRect(0, 0, windowWidth, windowHeight * 2);
 		
-		GradientPaint background = new GradientPaint(0, 0, new Color(200, 200, 200, 0), 0, windowHeight, Color.white);
-		g2.setPaint(background);
-		g2.fillRect(0, 0, windowWidth, windowHeight);
-	    
-	    g2.setColor(new Color(200, 200, 200));	    
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
-	    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
-	    
-	    if (UI.showQR == true) {	
-	    		    	
-			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.oneBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
-			
-			g2.drawImage(StegoApp.oneBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeFiveBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.oneBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.fiveBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
-
-			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeOneN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeTwoN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.qrCodeThreeN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.oneNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.twoNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
-			g2.drawImage(StegoApp.threeNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
-			
-	    }
-	    
-	    g2.setColor(new Color(150, 150, 150));
-		g2.setFont(labelFont);
-	
+		// Setting the front color
+		g2.setColor(new Color(150, 150, 150));	
+		
+		// Drawing headings
 		g2.setFont(headingFont);
 		g2.drawString("Least Significant Bit (LSB) Substitution", (int)(windowWidth * 0.05), (int)(windowHeight * 0.02));
 		g2.drawString("1-bit:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.052));
@@ -152,6 +89,7 @@ public class ScrollPanel extends JPanel implements ActionListener {
 		g2.drawString("n = 2:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.792));
 		g2.drawString("n = 3:", (int)(windowWidth * 0.48), (int)(windowHeight * 0.892));
 
+		// Change styling for descriptions
 		g2.setFont(bodyFont);
 		int lineHeight = g2.getFontMetrics().getHeight() * 6 / 5;
 		
@@ -162,7 +100,8 @@ public class ScrollPanel extends JPanel implements ActionListener {
 				              + "method embeds messages within the least significant bits of the cover image \n"
 				              + "and can use n of these bits (\"n-bit(s)\") to accomplish the embedding. The higher \n"
 				              + "the n, the higher the embedding capacity and the lower the output image quality.";
-	
+
+		// Setting line height and breaks
 		String [] linesLSB = lsbDescription.split("\n");
 		for (int lineCount = 0; lineCount < linesLSB.length; lineCount++) {
 		    int x = (int)(windowWidth * 0.05);
@@ -180,6 +119,7 @@ public class ScrollPanel extends JPanel implements ActionListener {
 							   + "1 to a 0 without damaging the embedded data. This leaves the OPAP pixel \n" 
 							   + "value at 00001111 (decimal 15) with an embedding error of 1.";
 
+		// Setting line height and breaks
 		String [] linesOPAP = opapDescription.split("\n");
 		for (int lineCount = 0; lineCount < linesOPAP.length; lineCount++) {
 			int x = (int)(windowWidth * 0.05);
@@ -197,6 +137,7 @@ public class ScrollPanel extends JPanel implements ActionListener {
 							  + "function result with EMD conditions to determine which pixel is increased by 1, \n" 
 							  + "decreased by 1, or no change is made.";
 
+		// Setting line height and breaks
 		String [] linesEMD = emdDescription.split("\n");
 			for (int lineCount = 0; lineCount < linesEMD.length; lineCount++) {
 			int x = (int)(windowWidth * 0.05);
@@ -205,72 +146,117 @@ public class ScrollPanel extends JPanel implements ActionListener {
 			g2.drawString(line, x, y);
 		}
         
-		// underlines
+		// Underlines
 		g2.setColor(new Color(200, 200, 200));
 		g2.fillRect(0, (int)(windowHeight * 0.320), windowWidth, 1);
 		g2.fillRect(0, (int)(windowHeight * 0.64), windowWidth, 1);
 		
+		
+	    if (!UI.showQR) {
+	    	// Placeholder Image Squares
+		    g2.setColor(new Color(200, 200, 200));	    
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.010), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.110), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.210), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8);
+		    g2.fillRect((int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8);
+	    	
+	    	
+	    } else {
+	    	// Draw images for LSB
+			g2.drawImage(StegoApp.oneBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBit, (int)(windowWidth * 0.68), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.01), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.11), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.21), windowWidth / 8, windowWidth / 8, this);
+			
+			// Update LSB Histograms
+			updateHistogram(histLSB[0], StegoApp.coverImage);
+			updateHistogram(histLSB[1], StegoApp.threeBitStegoImage);
+			updateHistogram(histLSB[2], StegoApp.threeBitDifference);
+			
+			// Draw images for OPAP
+			g2.drawImage(StegoApp.oneBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitOPAPStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeFiveBitOPAP, (int)(windowWidth * 0.68), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.330), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.430), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.fiveBitOPAPDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.530), windowWidth / 8, windowWidth / 8, this);
+			
+			// Update OPAP Histograms
+			updateHistogram(histOPAP[0], StegoApp.coverImage);
+			updateHistogram(histOPAP[1], StegoApp.threeBitOPAPStegoImage);
+			updateHistogram(histOPAP[2], StegoApp.threeBitOPAPDifference);
+
+			// Draw images for EMD
+			g2.drawImage(StegoApp.oneNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.twoNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeNStegoImage, (int)(windowWidth * 0.54), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeOneN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeTwoN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.qrCodeThreeN, (int)(windowWidth * 0.68), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.oneNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.650), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.twoNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.750), windowWidth / 8, windowWidth / 8, this);
+			g2.drawImage(StegoApp.threeNDifference, (int)(windowWidth * 0.82), (int)(windowHeight * 0.850), windowWidth / 8, windowWidth / 8, this);
+			
+			// Update EMD Histograms
+			updateHistogram(histEMD[0], StegoApp.coverImage);
+			updateHistogram(histEMD[1], StegoApp.twoNStegoImage);
+			updateHistogram(histEMD[2], StegoApp.threeNDifference);
+	    } 
 	} // end showMainScreen
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-	}
-	
-	/* 
-	 * Create a button 
-	 * 
-	 * @param text - the text that appears on the button
-	 * @param x - the x position of the top-left corner of the button
-	 * @param y - the y position of the top-left corner of the button
-	 * @param width - the width of the button
-	 * @param height - the height of button
+    
+	/*
+	 * TODO: Add comment
 	 */
-	private static JButton createButton(String text, int x, int y, int width, int height) {
-		JButton button = new JButton(text);
-		Color teal = new Color(22, 144, 129);
-		button.setBounds(x, y, width, height);
-		button.setOpaque(true);
-		button.setForeground(teal); // color of text on button
-		button.setBackground(Color.white); // background color of button
-		Border line = new LineBorder(teal);
-		Border padding = new EmptyBorder(0, 0, 0, 0);
-		Border compound = new CompoundBorder(line, padding);
-		button.setBorder(compound);
-		button.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent e) {
-				button.setForeground(Color.white); // color of text on button
-				button.setBackground(teal); // background color of button
-				button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-			}
-			public void mouseExited(MouseEvent e) {
-				button.setForeground(teal);
-				button.setBackground(Color.white);
-			}
-		});
-
-		return button;
-	} // end createButton	
-	
-	
-	
-//    public void repaint() {
-//        this.setVisible(true);
-//    }
-//	
-//    public void addHistogram(BufferedImage image, Histogram histogram, int x, int y, int w, int h) {
-//    	addHistogram(image, histogram, true, true, true, x, y, w, h);
-//    }
-//    
-//    public void addHistogram(BufferedImage image, Histogram histogram, 
-//    		                 boolean plotRed, boolean plotGreen, boolean plotBlue,
-//    		                 int x, int y, int w, int h) {
-//    	HistogramPanel hp = new HistogramPanel(histogram.getBins(), plotRed, plotGreen, plotBlue);
-//    	hp.setBounds(x, y, w, h);
-//    	this.add(hp); 	
-//    }
+    public HistogramPanel addHistogram(BufferedImage image, int x, int y, int width, int height) {
+    	// Create histogram
+    	Histogram histLSB = new Histogram(new int[] {256}, new double[] {0.0}, new double[] {256.0});
+		histLSB.countPixels(image.getRaster(), null, 0, 0, 1, 1);
+		
+		// Create HistogramPanel
+		HistogramPanel hp = new HistogramPanel(histLSB, x, y, width, height);
+		this.add(hp);
+		
+		// Return HistogramPanel to be saved
+		return hp;
+    }
     
-    
-
-	
+    /*
+     * TODO: Add comment
+     */
+    public void updateHistogram(HistogramPanel hp, BufferedImage image) {
+    	hp.histogram.clearHistogram();
+    	hp.histogram.countPixels(image.getRaster(), null, 0, 0, 1, 1);
+    	((HistogramPanel) hp).repaint();
+    }
 } //end ScrollPanel class

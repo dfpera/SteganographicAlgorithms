@@ -60,7 +60,6 @@ public class UI extends JPanel implements ActionListener {
 	public static String secretMessage = "Enter your secret message";
 	ScrollPanel scrollUI;
 	JScrollPane scroll;
-    HistogramCreator histogramCreator;
 	
 	public UI(JFrame frame) {
 		super();
@@ -98,11 +97,7 @@ public class UI extends JPanel implements ActionListener {
 		
 		randomizeButton = createButton("Randomize Image", (int)(windowWidth * 0.54), (int)(windowHeight * 0.09), windowWidth / 8, windowHeight / 12);
 		randomizeButton.addActionListener(this);
-		randomizeButton.setVisible(false);	
-
-        histogramCreator = new HistogramCreator();
-        
-		
+		randomizeButton.setVisible(false);	        
 	} // end UI
 
 	public static void setState(UIState nextState) {
@@ -114,6 +109,7 @@ public class UI extends JPanel implements ActionListener {
 	}
 	
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
@@ -332,7 +328,7 @@ public class UI extends JPanel implements ActionListener {
 			secretMessage = textBox.getText().toString();
 			System.out.println("Embedded text: " + secretMessage);
 			showQR = true;
-			updateImages();;
+			updateImages();
 		}	
 		repaint();
 	}
@@ -433,19 +429,4 @@ public class UI extends JPanel implements ActionListener {
 
 		return button;
 	} // end createButton	
-    
-    public void addHistogram(BufferedImage image, Histogram histogram, int x, int y, int w, int h) {
-    	addHistogram(image, histogram, true, true, true, x, y, w, h);
-    }
-    
-    public void addHistogram(BufferedImage image, Histogram histogram, 
-    		                 boolean plotRed, boolean plotGreen, boolean plotBlue,
-    		                 int x, int y, int w, int h) {
-    	HistogramPanel hp = new HistogramPanel(histogram.getBins(), plotRed, plotGreen, plotBlue);
-    	hp.setBounds(x, y, w, h);
-    	this.add(hp);
-    	hp.repaint();
-    	
-    }
-	
 } //end UI class
