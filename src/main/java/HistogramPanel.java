@@ -11,6 +11,9 @@ public class HistogramPanel extends JPanel {
     final int graphHeight;
     final int graphWidth;
 
+    /*
+     * TODO: WRITE COMMENT
+     */
     HistogramPanel(Histogram histogram, int x, int y, int width, int height) {
     	this.histogram = histogram;
     	this.maxHeight = height;
@@ -21,19 +24,37 @@ public class HistogramPanel extends JPanel {
         this.setPreferredSize(new Dimension(maxWidth, maxHeight));
     }
 
+    /*
+     * (non-Javadoc)
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     * TODO: WRITE COMMENT
+     */
     protected void paintComponent(Graphics g) {
     	super.paintComponent(g);
     	int[] bins = histogram.getBins()[0];
-        g.setColor(new Color(0, 0, 0, 125));
-        g.fill3DRect(maxWidth / 20, maxHeight / 20, graphWidth, graphHeight, true);
         int initX = maxWidth / 20;
         int initY = maxHeight - (maxHeight / 20);
-        int width = 2;
-        int heightScale = 20;
-        int widthScale = 3;
+        int width = graphWidth / 256;
+        
+        // Get max value
+        double heightScale = 0;
+        for (int i = 1; i < bins.length; i++) {
+            if (bins[i] > heightScale) {
+                heightScale = bins[i];
+            }
+        }
+        
+        // Generate histogram graphic
         for (int i = 0; i < 256; i++) {
             g.setColor(new Color(22, 144, 129));
-            g.fill3DRect(initX + (width * i) / widthScale, initY - bins[i] / heightScale, width, bins[i] / heightScale, false);
+            double heightRatio = (double) bins[i] / heightScale;
+            g.fill3DRect(
+            		initX + (width * i), 
+            		initY - (int)(heightRatio * graphHeight), 
+            		width, 
+            		(int)(heightRatio * graphHeight), 
+            		false
+            		);
         }
     }
 }

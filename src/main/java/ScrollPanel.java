@@ -156,6 +156,7 @@ public class ScrollPanel extends JPanel {
 		g2.setColor(new Color(150, 150, 150));
 		g2.setFont(labelFont);
 		
+		// Draw labels for the histograms
 		g2.drawString("Histogram: Cover image", (int)(windowWidth * 0.075), (int)(windowHeight * 0.207));
 		g2.drawString("Histogram: After 3-bit LSB", (int)(windowWidth * 0.275), (int)(windowHeight * 0.207));
 		g2.drawString("Histogram: Difference image", (int)(windowWidth * 0.063), (int)(windowHeight * 0.304));
